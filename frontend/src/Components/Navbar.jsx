@@ -25,9 +25,11 @@ export default function Navbar() {
             How It Works
           </li>
 
+          <Link to="/About">
           <li className="hover:text-cyan-400 cursor-pointer transition duration-300">
-            Contact
+            About
           </li>
+          </Link>
         </ul>
 
         {/* Buttons */}
