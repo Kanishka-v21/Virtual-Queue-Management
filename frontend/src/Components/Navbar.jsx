@@ -16,10 +16,11 @@ export default function Navbar() {
           <li className="hover:text-cyan-400 cursor-pointer transition duration-300">
             Home
           </li>
-
+          <Link to="./Features">
           <li className="hover:text-cyan-400 cursor-pointer transition duration-300">
             Features
           </li>
+          </Link>
 
           <li className="hover:text-cyan-400 cursor-pointer transition duration-300">
             How It Works
