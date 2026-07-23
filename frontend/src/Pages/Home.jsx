@@ -1,7 +1,25 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import Hero from "../Components/Hero";
 
 export default function Home() {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === "#howitworks"){
+      const section = document.getElementById("howitworks");
+
+      if(section) {
+        setTimeout(() => {
+          section.scrollIntoView({
+            behavior: "smooth",
+            block: "start",});
+          },100);
+        }
+      }
+    },[location]);
+         
   return (
     <>
       <Navbar />
@@ -31,7 +49,152 @@ export default function Home() {
 
         </div>
       </section>
+      <section
+            id="how-it-works"
+            className="bg-[#06172F] py-24 px-6">
+        
+        <div className="max-w-7xl mx-auto">
+
+            {/* Heading */}
+
+            <div className="text-center mb-20">
+
+            <span className="uppercase tracking-[6px] text-cyan-400 font-semibold">
+                How It Works
+            </span>
+
+            <h2 className="text-5xl md:text-6xl font-bold mt-5">
+                Queue Management
+                <span className="text-cyan-400"> Made Simple</span>
+            </h2>
+
+            <p className="text-gray-300 max-w-3xl mx-auto mt-6 text-lg leading-8">
+                Join the queue digitally, monitor your position in real time,
+                and arrive only when it's your turn.
+                No long lines. No wasted time.
+            </p>
+
+            </div>
+
+            {/* Timeline */}
+
+            <div className="relative">
+
+            {/* Vertical Line */}
+
+            <div className="hidden md:block absolute left-1/2 top-0 h-full w-1 bg-cyan-500/30 -translate-x-1/2"></div>
+
+            {/* STEP 1 */}
+
+            <div className="relative grid md:grid-cols-2 gap-12 items-center mb-20">
+
+                <div className="md:text-right">
+
+                <h3 className="text-3xl font-bold">
+                    Scan & Join
+                </h3>
+
+                <p className="text-gray-300 mt-4 leading-7">
+                    Scan the QR code or open the website to instantly join
+                    the virtual queue from anywhere.
+                </p>
+
+                </div>
+
+                <div className="relative flex justify-center">
+
+                <div className="w-20 h-20 rounded-full bg-cyan-500 flex items-center justify-center text-4xl shadow-xl shadow-cyan-500/40">
+                    📱
+                </div>
+
+                </div>
+
+            </div>
+
+            {/* STEP 2 */}
+
+            <div className="relative grid md:grid-cols-2 gap-12 items-center mb-20">
+
+                <div className="order-2 md:order-1 flex justify-center">
+
+                <div className="w-20 h-20 rounded-full bg-cyan-500 flex items-center justify-center text-4xl shadow-xl shadow-cyan-500/40">
+                    🎟️
+                </div>
+
+                </div>
+
+                <div className="order-1 md:order-2">
+
+                <h3 className="text-3xl font-bold">
+                    Receive Your Token
+                </h3>
+
+                <p className="text-gray-300 mt-4 leading-7">
+                    A unique digital token is generated automatically and
+                    assigned to your position in the queue.
+                </p>
+
+                </div>
+
+            </div>
+
+            {/* STEP 3 */}
+
+            <div className="relative grid md:grid-cols-2 gap-12 items-center mb-20">
+
+                <div className="md:text-right">
+
+                <h3 className="text-3xl font-bold">
+                    Track Your Position
+                </h3>
+
+                <p className="text-gray-300 mt-4 leading-7">
+                    Watch live queue updates, estimated waiting time,
+                    and your current position directly from your phone.
+                </p>
+
+                </div>
+
+                <div className="flex justify-center">
+
+                <div className="w-20 h-20 rounded-full bg-cyan-500 flex items-center justify-center text-4xl shadow-xl shadow-cyan-500/40">
+                    📊
+                </div>
+
+                </div>
+
+            </div>
+
+            {/* STEP 4 */}
+
+            <div className="relative grid md:grid-cols-2 gap-12 items-center">
+
+                <div className="order-2 md:order-1 flex justify-center">
+
+                <div className="w-20 h-20 rounded-full bg-cyan-500 flex items-center justify-center text-4xl shadow-xl shadow-cyan-500/40">
+                    ✅
+                </div>
+
+                </div>
+
+                <div className="order-1 md:order-2">
+
+                <h3 className="text-3xl font-bold">
+                    Get Served
+                </h3>
+
+                <p className="text-gray-300 mt-4 leading-7">
+                    When your number is called, arrive at the counter and
+                    complete your service without waiting in long physical lines.
+                </p>
+
+                </div>
+            </div>
+            </div>
+            </div>
+            </section>
       <Hero/>
+      
     </>
   );
 }
