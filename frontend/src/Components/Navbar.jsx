@@ -21,8 +21,8 @@ export default function Navbar() {
             Features
           </li>
           </Link>
-          <Link to="/#howitworks">
-          <li id ="howitworks" className="hover:text-cyan-400 cursor-pointer transition duration-300">
+          <Link to="/#how-it-works">
+          <li className="hover:text-cyan-400 cursor-pointer transition duration-300">
             How It Works
           </li>
           </Link>

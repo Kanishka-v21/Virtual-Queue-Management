@@ -7,8 +7,8 @@ export default function Home() {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.hash === "#howitworks"){
-      const section = document.getElementById("howitworks");
+    if (location.hash === "#how-it-works"){
+      const section = document.getElementById("how-it-works");
 
       if(section) {
         setTimeout(() => {
@@ -27,28 +27,29 @@ export default function Home() {
       <section className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-cyan-900 flex items-center justify-center">
         <div className="text-center px-6">
 
-          <h1 className="text-6xl font-extrabold text-white mb-6">
+          <h1 className="text-6xl font-extrabold text-white mb-6 transition-all duration-700 hover:scale-105">
             Smart Queue Management
           </h1>
 
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-10">
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-10 transition-opacity duration-700">
             Eliminate long waiting lines with a modern virtual queue
             management system. Join queues remotely, receive live updates,
             and save valuable time.
           </p>
 
           <div className="flex justify-center gap-6">
-            <button className="bg-cyan-400 text-slate-900 px-8 py-4 rounded-xl font-bold hover:scale-105 transition">
+            <button className="bg-cyan-400 text-slate-900 px-8 py-4 rounded-xl font-bold transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-cyan-500/40">
               Join Queue
             </button>
 
-            <button className="border-2 border-white text-white px-8 py-4 rounded-xl hover:bg-white hover:text-slate-900 transition">
+            <button className="border-2 border-white text-white px-8 py-4 rounded-xl transition-all duration-300 hover:bg-white hover:text-slate-900 hover:scale-110">
               Learn More
             </button>
           </div>
 
         </div>
       </section>
+        <Hero/>
       <section
             id="how-it-works"
             className="bg-[#06172F] py-24 px-6">
@@ -63,7 +64,7 @@ export default function Home() {
                 How It Works
             </span>
 
-            <h2 className="text-5xl md:text-6xl font-bold mt-5">
+            <h2 className="text-cyan-400 md:text-6xl font-bold mt-5">
                 Queue Management
                 <span className="text-cyan-400"> Made Simple</span>
             </h2>
@@ -90,7 +91,7 @@ export default function Home() {
 
                 <div className="md:text-right">
 
-                <h3 className="text-3xl font-bold">
+                <h3 className="text-cyan-400 text-3xl font-bold">
                     Scan & Join
                 </h3>
 
@@ -125,7 +126,7 @@ export default function Home() {
 
                 <div className="order-1 md:order-2">
 
-                <h3 className="text-3xl font-bold">
+                <h3 className="text-cyan-400 text-3xl font-bold">
                     Receive Your Token
                 </h3>
 
@@ -144,7 +145,7 @@ export default function Home() {
 
                 <div className="md:text-right">
 
-                <h3 className="text-3xl font-bold">
+                <h3 className="text-cyan-400 text-3xl font-bold">
                     Track Your Position
                 </h3>
 
@@ -179,7 +180,7 @@ export default function Home() {
 
                 <div className="order-1 md:order-2">
 
-                <h3 className="text-3xl font-bold">
+                <h3 className="text-cyan-400 text-3xl font-bold">
                     Get Served
                 </h3>
 
@@ -193,8 +194,6 @@ export default function Home() {
             </div>
             </div>
             </section>
-      <Hero/>
-      
     </>
   );
 }
