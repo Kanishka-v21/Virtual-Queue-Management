@@ -81,13 +81,13 @@ function Register() {
                 Already have an account?{" "}
                 <Link
                     to="/login"
-                    className="text-blue-600 font-semibold hover:underline"
-                >
+                    className="text-blue-600 font-semibold hover:underline">
                     Login
                 </Link>
                 </p>
             </form>
             </div>
+        
         );
 }
 

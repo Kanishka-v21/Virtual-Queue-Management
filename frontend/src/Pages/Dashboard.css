@@ -447,3 +447,24 @@ width:100%;
     color:#d1d5db;
     line-height:1.6;
 }
+.dashboard-actions{
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 30px;
+}
+.join-queue-btn{
+    background: #22d3ee;
+    color: #071426;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 10 px;
+    font-size:1rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.join-queue-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 0 15px rgba(34,211,238,.3);
+}

@@ -1,10 +1,11 @@
 import "./Dashboard.css";
+import { useNavigate } from "react-router-dom";
 import { FaTicketAlt, FaUsers, FaClock, FaBullhorn } from "react-icons/fa";
 import { useState } from "react";
 import DashboardNavbar from "../Components/DashboardNavbar";
 
 export default function Dashboard() {
-
+    const navigate = useNavigate();
     const [queueData] = useState({
         token: "--",
         serving: "--",
@@ -20,6 +21,12 @@ export default function Dashboard() {
             <div className = "welcome-card">
                 <h1> Welcome Back 👋</h1>
                 <p> Stay updated with your queue status in real time.</p>
+            </div>
+            <div className ="dashboard-actions">
+                <button className="join-queue-btn"
+                onClick={() => navigate("/joinqueue")}>
+                     Join A Queue
+                </button>
             </div>
 
             <div className="stats-grid">

@@ -3,7 +3,7 @@ import "../Pages/Dashboard.css";
 
 export default function DashboardNavbar() {
     return (
-        <nav classname ="dashboard-navbar">
+        <nav className ="dashboard-navbar">
             <div className="dashboard-logo">
                 <h2>Queue<span>Flow</span></h2>
             </div>

@@ -2,10 +2,11 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import Hero from "../Components/Hero";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const location = useLocation();
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (location.hash === "#how-it-works"){
       const section = document.getElementById("how-it-works");
@@ -38,7 +39,8 @@ export default function Home() {
           </p>
 
           <div className="flex justify-center gap-6">
-            <button className="bg-cyan-400 text-slate-900 px-8 py-4 rounded-xl font-bold transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-cyan-500/40">
+            <button 
+            onClick={() => navigate("/register")}className="bg-cyan-400 text-slate-900 px-8 py-4 rounded-xl font-bold transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-cyan-500/40">
               Join Queue
             </button>
 
