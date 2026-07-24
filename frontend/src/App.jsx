@@ -6,6 +6,7 @@ import About from "./Pages/About";
 import Features from "./Pages/Features";
 import JoinQueue from "./Pages/JoinQueue";
 import Dashboard from "./Pages/Dashboard";
+import AdminDashboard from "./Pages/AdminDashboard";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Route path = "/features" element={<Features />} />
       <Route path = "/dashboard" element={<Dashboard />} />
       <Route path="/joinqueue" element={<JoinQueue />} />
+      <Route path ="/admindashboard" element={<AdminDashboard/>} />
     </Routes>
     </BrowserRouter>
   );
