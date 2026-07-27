@@ -9,6 +9,7 @@ const getQueue = async (req, res) => {
         });
     }
 };
+
 const joinQueue = async(req, res) => {
     try {
         const { customerName, customerEmail, serviceName } = req.body;
@@ -32,9 +33,10 @@ const updateQueueStatus = async (req, res) => {
     if (!queue) {
       return res.status(404).json({ message: "Queue entry not found" });
     }
-
     queue.status = status;
-
+    if (status === "Completed") {
+        queue.servedAt = newDate();
+    }
     await queue.save();
 
     res.status(200).json(queue);
@@ -45,4 +47,74 @@ const updateQueueStatus = async (req, res) => {
   }
 };
 
-module.exports = { joinQueue, getQueue, updateQueueStatus};
+const getQueueByToken = async (req, res) => {
+    try {
+        const queue = await Queue.findOne({
+            tokenNumber: req.params.token,});
+            if (!queue) {
+                return
+                res.status(404).json({ message: "Token not found"});
+            }
+            res.json(queue);
+        } catch (error) {
+            res.status(500).json({
+                message: error.message, 
+            });
+        }
+    };
+const getDashboardStats = async (req, res) => {
+  try {
+    const waiting = await Queue.countDocuments({
+      status: "Waiting",
+    });
+
+    const serving = await Queue.countDocuments({
+      status: "Serving",
+    });
+
+    const completed = await Queue.countDocuments({
+      status: "Completed",
+    });
+
+    const cancelled = await Queue.countDocuments({
+      status: "Cancelled",
+    });
+
+    const total = await Queue.countDocuments();
+
+    res.json({
+      total,
+      waiting,
+      serving,
+      completed,
+      cancelled,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+const deleteQueue = async (req, res) => {
+  try {
+    const queue = await Queue.findById(req.params.id);
+
+    if (!queue) {
+      return res.status(404).json({
+        message: "Queue entry not found",
+      });
+    }
+
+    await Queue.findByIdAndDelete(req.params.id);
+
+    res.json({
+      message: "Queue entry deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+module.exports = { joinQueue, getQueue, updateQueueStatus, getQueueByToken, getDashboardStats, deleteQueue };
