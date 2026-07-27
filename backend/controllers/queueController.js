@@ -16,6 +16,11 @@ const joinQueue = async(req, res) => {
         const lastToken = await Queue.findOne().sort({ tokenNumber: -1 });
         const tokenNumber = lastToken ? lastToken.tokenNumber + 1 : 1;
         const queue = await Queue.create({tokenNumber, customerName, customerEmail, serviceName, status: "Waiting",});
+
+        console.log("Collection:", Queue.collection.name);
+        console.log("Created Queue:", queue);
+        console.log("ID:", queue._id);
+
         res.status(201).json(queue);
     } catch(error) {
         res.status(500).json({
@@ -29,7 +34,11 @@ const updateQueueStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
+    console.log("ID received:", id);
+
     const queue = await Queue.findById(id);
+
+    console.log("Queue found:", queue);
 
     if (!queue) {
       return res.status(404).json({
@@ -38,11 +47,11 @@ const updateQueueStatus = async (req, res) => {
     }
 
     queue.status = status;
-
     await queue.save();
 
-    res.status(200).json(queue);
+    res.json(queue);
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: error.message,
     });
