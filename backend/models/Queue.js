@@ -21,7 +21,7 @@ const queueSchema = new mongoose.Schema(
     },
     status: {
         type: String,
-        enum: ["Waiting", "Served", "Completed", "Cancelled"],
+        enum: ["Waiting", "Serving", "Completed", "Cancelled"],
         default: "Waiting",
     },
     estimatedTime: {
@@ -30,6 +30,7 @@ const queueSchema = new mongoose.Schema(
     },
     joinedAt: {
         type: Date,
+        default: Date.now,
     },
 },
     { 
