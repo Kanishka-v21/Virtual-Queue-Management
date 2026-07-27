@@ -15,13 +15,13 @@ const queueSchema = new mongoose.Schema(
         type: String,
         required: true,
     },
-    servicename: {
+    serviceName: {
         type: String,
         required: true,
     },
     status: {
         type: String,
-        enum: ["Waiting", "Serving", "Completed", "Cancelled"],
+        enum: ["Waiting", "Served", "Completed", "Cancelled"],
         default: "Waiting",
     },
     estimatedTime: {

@@ -4,6 +4,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const authRoutes =require("./routes/authRoutes");
 const { protect } = require("./middleware/authMiddleware");
+const queueRoutes = require("./routes/queueRoutes");
 dotenv.config();
 
 connectDB();
@@ -13,6 +14,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
+app.use("/api/queue", queueRoutes);
 
 app.get("/", (req, res) => {
     res.send("Queue Management API Running");
