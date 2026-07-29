@@ -1,7 +1,20 @@
 import { FaBell, FaUserCircle, FaSignOutAlt } from "react-icons/fa";
 import "../Pages/Dashboard.css";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function DashboardNavbar() {
+    const navigate = useNavigate();
+    const { logout } = useAuth();
+
+    const handleProfile = () => {
+        navigate("/profile");
+    };
+
+    const handleLogout = () => {
+            logout();
+            navigate("/login");
+    }
     return (
         <nav className ="dashboard-navbar">
             <div className="dashboard-logo">
@@ -14,14 +27,21 @@ export default function DashboardNavbar() {
                 </div>
                 <div className ="profile">
                     <FaUserCircle className="profile-icon" />
-                    <span> Welcome, User</span>
+                    <span></span>
                 </div>
-                <button className="logout-btn">
-                    <FaSignOutAlt />
-                    Logout
+    
+                <button
+                    onClick={handleProfile}
+                    className="bg-cyan-600 text-white px-5 py-2 rounded-lg hover:bg-cyan-700 transition">
+                    Profile
                 </button>
+
+                <button
+                onClick={handleLogout}
+                className="w-full bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700">
+                Logout
+            </button>
             </div>
         </nav>
-
     );
 }

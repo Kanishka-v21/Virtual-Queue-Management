@@ -9,21 +9,38 @@ import Dashboard from "./Pages/Dashboard";
 import AdminDashboard from "./Pages/AdminDashboard";
 import Profile from "./Pages/Profile";
 import Settings from "./Pages/Settings";
+import { useEffect } from "react";
+import { getUserProfile } from "./services/authService";
+import ProtectedRoute from "./Components/ProtectedRoute";
 
 function App() {
+  useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const user = await getUserProfile();
+                console.log(user);
+            } catch (error) {
+                console.error(error.response?.data || error.message);
+            }
+        };
+
+        fetchProfile();
+    }, []);
   return (
     <BrowserRouter>
       <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path = "/about" element={<About />} />
-      <Route path = "/features" element={<Features />} />
-      <Route path = "/dashboard" element={<Dashboard />} />
-      <Route path="/joinqueue" element={<JoinQueue />} />
-      <Route path ="/admindashboard" element={<AdminDashboard/>} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/settings" element={<Settings />} />
+      <Route element ={ <ProtectedRoute />}>
+            <Route path="/register" element={<Register />} />
+            <Route path = "/about" element={<About />} />
+            <Route path = "/features" element={<Features />} />
+            <Route path = "/dashboard" element={<Dashboard />} />
+            <Route path="/joinqueue" element={<JoinQueue />} />
+            <Route path ="/admindashboard" element={<AdminDashboard/>} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/settings" element={<Settings />} />
+      </Route>
     </Routes>
     </BrowserRouter>
   );

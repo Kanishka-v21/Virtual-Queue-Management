@@ -237,3 +237,80 @@ transition:.3s;
 .dashboard-btn:hover{
 transform:translateY(-3px);
 }
+.ticket-result{
+    margin-top:25px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+
+
+.ticket-result div{
+
+    background:#f8fafc;
+    padding:15px;
+    border-radius:12px;
+    text-align:center;
+
+}
+
+
+.ticket-result span{
+
+    color:#64748b;
+    font-size:14px;
+
+}
+
+
+.ticket-result h2,
+.ticket-result h3{
+
+    margin-top:8px;
+    color:#0f172a;
+
+}
+
+
+
+.success-popup{
+
+    width:450px;
+    padding:35px;
+    background:white;
+    border-radius:20px;
+    text-align:center;
+
+}
+
+
+
+.success-icon{
+
+    width:60px;
+    height:60px;
+    margin:auto;
+    background:#22c55e;
+    color:white;
+    border-radius:50%;
+    font-size:35px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+}
+
+
+.dashboard-btn{
+
+    margin-top:25px;
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:#0891b2;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+
+}

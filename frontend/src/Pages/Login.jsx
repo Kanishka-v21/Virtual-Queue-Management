@@ -1,17 +1,43 @@
+import { loginUser } from "../services/authService";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 function Login() {
      const [email,setEmail] = useState("");
      const [password, setPassword] = useState("");
-     const handleSubmit = (e) => {
-        e.preventDefault();
+     const navigate = useNavigate();
+     const [loading, setLoading] = useState(false);
+     const { login } = useAuth();
+     const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        console.log({email, password,});};
+    try {
+        setLoading(true);
+
+        const user = await loginUser({
+            email,
+            password,
+        });
+
+        login(user);
+
+        navigate("/dashboard");
+
+    } catch (error) {
+        alert(
+            error.response?.data?.message ||
+            "Invalid email or password"
+        );
+    } finally {
+        setLoading(false);
+    }
+};
         
         return (
-         <div className = "min-h-screen bg-graidient-to-br from-slate-950 via-slate-900 to-slate-800 flex items-center justify-center px-4">
+         <div className = "min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 flex items-center justify-center px-4">
                 <form onSubmit = {handleSubmit}
-                className ="bg-white p-8 rounded-x1 shadow-1g w-96">
+                className ="bg-white p-8 rounded-xl shadow-lg w-96">
                 <h2 className ="text-4xl font-bold text-center text-cyan-400 mb-8">
                     Login
                 </h2>
@@ -24,16 +50,19 @@ function Login() {
                 onChange = {(e) => setEmail(e.target.value)}/>
 
                 <input 
-                type = "Password"
-                palceholder = "password"
+                type = "password"
+                placeholder = "password"
                 value = {password}
                 onChange = {(e) => setPassword(e.target.value)}
                 className = "w-full border p-3 rounded-lg mb-6"/>
 
                 <button
-                type = "Submit"
-                className = "w-full bg-blue-600 text-white py-3 rounded-lg hover: bg-blue-700"> 
-                 Submit</button>
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+                >
+                    {loading ? "Logging In..." : "Login"}
+                </button>
              </form>
          </div>
     );

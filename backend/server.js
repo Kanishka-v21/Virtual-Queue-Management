@@ -5,16 +5,25 @@ const connectDB = require("./config/db");
 const authRoutes =require("./routes/authRoutes");
 const { protect } = require("./middleware/authMiddleware");
 const queueRoutes = require("./routes/queueRoutes");
+const helmet=require("helmet");
+const rateLimit=require("express-rate-limit");
 dotenv.config();
 
 connectDB();
 
 const app = express();
+const limiter=rateLimit({
+windowMs:15*60*1000,
+max:100
+});
+
 
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/queue", queueRoutes);
+app.use(helmet());
+app.use(limiter);
 
 app.get("/", (req, res) => {
     res.send("Queue Management API Running");

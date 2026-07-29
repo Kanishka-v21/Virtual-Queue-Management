@@ -1,17 +1,21 @@
 import { User, Mail, Phone, Ticket, Clock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Profile() {
+  const navigate = useNavigate();
+ 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-8">
       <div className="max-w-4xl mx-auto bg-slate-900 rounded-2xl p-8">
 
         <div className="flex items-center gap-6">
           <div className="w-24 h-24 rounded-full bg-cyan-500 flex items-center justify-center text-4xl font-bold">
-            K
+            My Profile
           </div>
 
           <div>
-            <h1 className="text-3xl font-bold">Kanishka</h1>
+            <h1 className="text-3xl font-bold"><strong>Name:</strong> {User?.name}</h1>
             <p className="text-slate-400">Queue Management User</p>
           </div>
         </div>
@@ -21,16 +25,7 @@ export default function Profile() {
           <div className="bg-slate-800 p-5 rounded-xl flex items-center gap-4">
             <Mail className="text-cyan-400" />
             <div>
-              <p className="text-slate-400">Email</p>
-              <h3>kanishka@email.com</h3>
-            </div>
-          </div>
-
-          <div className="bg-slate-800 p-5 rounded-xl flex items-center gap-4">
-            <Phone className="text-cyan-400" />
-            <div>
-              <p className="text-slate-400">Phone</p>
-              <h3>9876543210</h3>
+              <p className="text-slate-400"><strong>Email:</strong> {User?.email}</p>
             </div>
           </div>
 
@@ -49,7 +44,6 @@ export default function Profile() {
               <h3>Waiting</h3>
             </div>
           </div>
-
         </div>
 
       </div>
