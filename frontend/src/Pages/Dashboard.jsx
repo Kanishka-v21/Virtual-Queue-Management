@@ -1,103 +1,109 @@
-import "./Dashboard.css";
-import { useNavigate } from "react-router-dom";
 import {
-    FaTicketAlt,
-    FaUsers,
-    FaClock,
-    FaBullhorn
-} from "react-icons/fa";
+    Ticket,
+    Users,
+    Clock3,
+    Activity,
+    RefreshCw,
+    CheckCircle,
+    ArrowRight,
+    UserPlus
+} from "lucide-react";
 
 import { useEffect, useState } from "react";
-
-import { useAuth } from "../context/AuthContext";
-import DashboardNavbar from "../Components/DashboardNavbar";
+import { useNavigate } from "react-router-dom";
 
 import {
     getQueuePosition,
-    getQueueByToken
+    getQueueByToken,
+    getCurrentCustomer,
+    getWaitingQueue
 } from "../services/queueService";
 
 
 export default function Dashboard() {
 
     const navigate = useNavigate();
-    const { user } = useAuth();
 
+    const [queue, setQueue] = useState(null);
+    const [position, setPosition] = useState(null);
+    const [currentCustomer, setCurrentCustomer] = useState(null);
+    const [waitingCount, setWaitingCount] = useState(0);
 
-    const [queueData,setQueueData] = useState({
-
-        token:"--",
-        serving:"--",
-        peopleAhead:"--",
-        waitTime:"--",
-        customer:user?.name || "User",
-        counter:"--",
-        status:"Not Joined"
-
-    });
+    const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
+    const [error, setError] = useState("");
 
 
 
-    const loadQueueData = async()=>{
+    const loadDashboard = async () => {
 
+        try {
 
-        try{
+            setError("");
 
             const queueId =
-            localStorage.getItem("queueId");
+                localStorage.getItem("queueId");
 
 
-            if(!queueId){
+            if(queueId){
 
-                return;
+                const positionData =
+                    await getQueuePosition(queueId);
+
+
+                setPosition(positionData);
+
+
+
+                const tokenData =
+                    await getQueueByToken(
+                        positionData.tokenNumber
+                    );
+
+
+                setQueue(tokenData);
 
             }
 
 
-            const position =
-            await getQueuePosition(queueId);
+
+            try{
+
+                const current =
+                    await getCurrentCustomer();
+
+                setCurrentCustomer(
+                    current.customer || null
+                );
+
+
+            }
+            catch{
+
+                setCurrentCustomer(null);
+
+            }
 
 
 
-            const queue =
-            await getQueueByToken(
-                position.tokenNumber
-            );
+
+            try{
+
+                const waiting =
+                    await getWaitingQueue();
 
 
-
-            setQueueData({
-
-                token:
-                queue.tokenNumber,
+                setWaitingCount(
+                    waiting.total || 0
+                );
 
 
-                serving:
-                queue.status==="Serving"
-                ? queue.tokenNumber
-                : "--",
+            }
+            catch{
 
+                setWaitingCount(0);
 
-                peopleAhead:
-                position.peopleAhead,
-
-
-                waitTime:
-                position.estimatedWaitTime+" mins",
-
-
-                customer:
-                queue.customerName,
-
-
-                counter:
-                "A-03",
-
-
-                status:
-                queue.status
-
-            });
+            }
 
 
         }
@@ -105,40 +111,134 @@ export default function Dashboard() {
 
             console.log(error);
 
-        }
+            setError(
+                error.response?.data?.message ||
+                "Unable to load dashboard"
+            );
 
+        }
+        finally{
+
+            setLoading(false);
+
+        }
 
     };
 
 
 
+
+
     useEffect(()=>{
 
-        loadQueueData();
+        loadDashboard();
 
     },[]);
 
 
 
 
-return (
-
-<div className="dashboard">
 
 
-<DashboardNavbar />
+    const handleRefresh = async()=>{
+
+        setRefreshing(true);
+
+        await loadDashboard();
+
+        setRefreshing(false);
+
+    };
 
 
 
-<div className="welcome-card">
 
-<h1>
-Welcome Back {user?.name}
+
+    const progress =
+        waitingCount === 0
+        ?
+        100
+        :
+        Math.round(
+            ((waitingCount -
+            (position?.peopleAhead || 0))
+            /
+            waitingCount)
+            *
+            100
+        );
+
+
+
+
+
+
+    if(loading){
+
+        return(
+
+            <div className="
+            min-h-screen
+            bg-slate-950
+            text-white
+            flex
+            items-center
+            justify-center
+            text-2xl
+            ">
+
+                Loading Dashboard...
+
+            </div>
+
+        );
+
+    }
+
+
+
+
+    return(
+
+<div className="
+min-h-screen
+bg-slate-950
+text-white
+p-8
+">
+
+
+<div className="max-w-7xl mx-auto">
+
+
+
+{/* HEADER */}
+
+<div className="
+flex
+justify-between
+items-center
+mb-10
+">
+
+
+<div>
+
+<h1 className="
+text-4xl
+font-bold
+text-cyan-400
+">
+
+My Queue Dashboard
+
 </h1>
 
 
-<p>
-Stay updated with your queue status in real time.
+<p className="text-slate-400 mt-2">
+
+Track your token and waiting status.
+
 </p>
 
 
@@ -146,531 +246,456 @@ Stay updated with your queue status in real time.
 
 
 
-<div className="dashboard-actions">
-
 <button
 
-className="join-queue-btn"
+onClick={handleRefresh}
+
+disabled={refreshing}
+
+className="
+bg-cyan-500
+text-black
+px-5
+py-3
+rounded-xl
+flex
+items-center
+gap-2
+disabled:opacity-50
+"
+
+>
+
+<RefreshCw size={18}/>
+
+{
+refreshing
+?
+"Refreshing..."
+:
+"Refresh"
+}
+
+</button>
+
+
+</div>
+
+
+
+
+
+{
+error &&
+
+<div className="
+bg-red-500/20
+text-red-400
+p-4
+rounded-xl
+mb-6
+">
+
+{error}
+
+</div>
+
+}
+
+
+
+
+
+{/* TOP CARDS */}
+
+
+<div className="
+grid
+lg:grid-cols-4
+md:grid-cols-2
+gap-6
+mb-10
+">
+
+
+
+<div className="bg-slate-900 p-6 rounded-xl">
+
+<Ticket className="text-cyan-400 mb-4"/>
+
+<p>Your Token</p>
+
+<h2 className="text-4xl font-bold">
+
+{
+queue
+?
+`#${queue.tokenNumber}`
+:
+"--"
+}
+
+</h2>
+
+</div>
+
+
+
+
+
+<div className="bg-slate-900 p-6 rounded-xl">
+
+<Users className="text-yellow-400 mb-4"/>
+
+<p>People Ahead</p>
+
+<h2 className="text-4xl font-bold">
+
+{
+position?.peopleAhead ??
+"--"
+}
+
+</h2>
+
+</div>
+
+
+
+
+
+
+<div className="bg-slate-900 p-6 rounded-xl">
+
+<Clock3 className="text-green-400 mb-4"/>
+
+<p>Estimated Wait</p>
+
+<h2 className="text-3xl font-bold">
+
+{
+position?.estimatedWaitTime
+?
+`${position.estimatedWaitTime} min`
+:
+"--"
+}
+
+</h2>
+
+</div>
+
+
+
+
+
+
+
+<div className="bg-slate-900 p-6 rounded-xl">
+
+<Activity className="text-blue-400 mb-4"/>
+
+<p>Status</p>
+
+<h2 className="text-3xl font-bold">
+
+{
+queue?.status ||
+"--"
+}
+
+</h2>
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{/* QUEUE PROGRESS */}
+
+
+<div className="
+bg-slate-900
+rounded-xl
+p-6
+mb-10
+">
+
+
+<div className="
+flex
+justify-between
+mb-3
+">
+
+
+<h2 className="text-2xl font-semibold">
+
+Queue Progress
+
+</h2>
+
+
+<span className="text-cyan-400 font-bold">
+
+{progress}%
+
+</span>
+
+
+</div>
+
+
+
+
+<div className="
+w-full
+bg-slate-700
+rounded-full
+h-3
+">
+
+
+<div
+
+className="
+bg-cyan-500
+h-3
+rounded-full
+"
+
+style={{
+width:`${progress}%`
+}}
+
+></div>
+
+
+</div>
+
+
+
+<p className="text-slate-400 mt-3">
+
+Progress increases as customers before you are served.
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+{/* DETAILS */}
+
+
+<div className="
+grid
+lg:grid-cols-2
+gap-8
+">
+
+
+
+<div className="
+bg-slate-900
+rounded-xl
+p-6
+">
+
+
+<h2 className="text-2xl font-semibold mb-6">
+
+Ticket Details
+
+</h2>
+
+
+<div className="space-y-4">
+
+
+<p className="flex justify-between">
+
+<span>
+Service
+</span>
+
+<span>
+{queue?.serviceName || "--"}
+</span>
+
+</p>
+
+
+
+<p className="flex justify-between">
+
+<span>
+Joined At
+</span>
+
+<span>
+
+{
+queue?.joinedAt
+?
+new Date(queue.joinedAt)
+.toLocaleString()
+:
+"--"
+}
+
+</span>
+
+</p>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div className="
+bg-slate-900
+rounded-xl
+p-6
+">
+
+
+<h2 className="text-2xl font-semibold mb-6">
+
+Current Counter
+
+</h2>
+
+
+<div className="
+flex
+items-center
+gap-5
+">
+
+
+<CheckCircle
+className="text-green-400"
+size={45}
+/>
+
+
+<div>
+
+<p>
+Currently Serving
+</p>
+
+
+<h2 className="
+text-4xl
+font-bold
+text-cyan-400
+">
+
+{
+currentCustomer
+?
+`#${currentCustomer.tokenNumber}`
+:
+"--"
+}
+
+</h2>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+{/* JOIN QUEUE BUTTON */}
+
+
+{
+!queue &&
+
+<div className="
+mt-10
+flex
+justify-center
+">
+
+
+<button
 
 onClick={()=>navigate("/joinqueue")}
 
+className="
+bg-green-500
+text-black
+px-8
+py-4
+rounded-xl
+font-semibold
+flex
+items-center
+gap-3
+"
+
 >
 
-Join A Queue
+<UserPlus/>
+
+Join Queue
 
 </button>
 
 
 </div>
-
-
-
-
-<div className="stats-grid">
-
-
-<div className="stats-card">
-
-<FaTicketAlt className="stat-icon"/>
-
-<h3>
-My Token
-</h3>
-
-<h2>
-{queueData.token}
-</h2>
-
-
-</div>
-
-
-
-
-<div className="stats-card">
-
-<FaBullhorn className="stat-icon"/>
-
-<h3>
-Now Serving
-</h3>
-
-<h2>
-{queueData.serving}
-</h2>
-
-</div>
-
-
-
-
-
-<div className="stats-card">
-
-<FaUsers className="stat-icon"/>
-
-<h3>
-People Ahead
-</h3>
-
-<h2>
-{queueData.peopleAhead}
-</h2>
-
-</div>
-
-
-
-
-
-<div className="stats-card">
-
-<FaClock className="stat-icon"/>
-
-<h3>
-Estimated Wait
-</h3>
-
-<h2>
-{queueData.waitTime}
-</h2>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div className="progress-card">
-
-
-<div className="progress-header">
-
-<h2>
-Queue Progress
-</h2>
-
-<span>
-{
-queueData.peopleAhead==="--"
-?
-"0%"
-:
-"70%"
-}
-
-</span>
-
-
-</div>
-
-
-
-<div className="progress-bar">
-
-<div className="progress-fill">
-
-</div>
-
-</div>
-
-
-
-<p className="status-text">
-
-{
-queueData.status==="Not Joined"
-
-?
-
-"Join a queue to see live updates."
-
-:
-
-<>⏳ You're getting closer! Only <strong>
-{queueData.peopleAhead}
-</strong> people are ahead of you.</>
 
 }
 
 
-</p>
 
 
 </div>
 
-
-
-
-
-
-
-<div className="updates-card">
-
-
-<h2>
-Recent Updates
-</h2>
-
-
-<div className="update-item">
-
-<span className="done">
-✔
-</span>
-
-<p>
-Queue status loaded successfully.
-</p>
-
 </div>
 
-
-
-<div className="update-item">
-
-<span className="done">
-✔
-</span>
-
-<p>
-Your token:
-<strong>
-#{queueData.token}
-</strong>
-</p>
-
-</div>
-
-
-
-<div className="update-item">
-
-<span className="pending">
-⏳
-</span>
-
-<p>
-Status:
-{queueData.status}
-</p>
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-
-<div className="actions-card">
-
-
-<h2>
-Quick Actions
-</h2>
-
-
-<div className="button-group">
-
-
-<button
-
-className="primary-btn"
-
-onClick={loadQueueData}
-
->
-
-Refresh Status
-
-</button>
-
-
-
-<button
-
-className="secondary-btn"
-
-onClick={()=>{
-
-localStorage.removeItem("queueId");
-
-window.location.reload();
-
-}}
-
->
-
-Leave Queue
-
-</button>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-<div className="summary-card">
-
-
-<h2>
-Today's Queue Summary
-</h2>
-
-
-
-<div className="summary-grid">
-
-
-<div className="summary-box">
-
-<h3>
-Your Token
-</h3>
-
-<p>
-{queueData.token}
-</p>
-
-</div>
-
-
-
-<div className="summary-box">
-
-<h3>
-Average Wait
-</h3>
-
-<p>
-{queueData.waitTime}
-</p>
-
-
-</div>
-
-
-
-
-<div className="summary-box">
-
-<h3>
-Queue Status
-</h3>
-
-<p className="active-status">
-
-{queueData.status}
-
-</p>
-
-</div>
-
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-<div className="ticket-card">
-
-
-<div className="ticket-header">
-
-
-<h2>
-🎟 Digital Queue Ticket
-</h2>
-
-
-<span>
-{queueData.status}
-</span>
-
-
-</div>
-
-
-
-
-<div className="ticket-details">
-
-
-<div>
-
-<p>
-Token Number
-</p>
-
-<h3>
-#{queueData.token}
-</h3>
-
-</div>
-
-
-
-<div>
-
-<p>
-Customer
-</p>
-
-<h3>
-{queueData.customer}
-</h3>
-
-
-</div>
-
-
-
-
-<div>
-
-<p>
-Counter
-</p>
-
-<h3>
-{queueData.counter}
-</h3>
-
-
-</div>
-
-
-
-<div>
-
-<p>
-Estimated Time
-</p>
-
-<h3>
-{queueData.waitTime}
-</h3>
-
-
-</div>
-
-
-</div>
-
-
-
-<div className="ticket-footer">
-
-
-<div className="qr-box">
-
-QR
-
-</div>
-
-
-<p>
-Show this ticket at service counter.
-</p>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-<div className="tips-card">
-
-
-<h2>
-Tips & Announcements
-</h2>
-
-
-
-<div className="tip">
-
-<span>
-✔
-</span>
-
-<p>
-Keep this page open for queue updates.
-</p>
-
-</div>
-
-
-
-<div className="tip">
-
-<span>
-📢
-</span>
-
-<p>
-Arrive 5 minutes before your turn.
-</p>
-
-</div>
-
-
-
-<div className="tip">
-
-<span>
-⏰
-</span>
-
-<p>
-Token remains valid after being called.
-</p>
-
-</div>
-
-
-
-</div>
-
-
-
-
-</div>
-
-
-);
-
+    );
 
 }

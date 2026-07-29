@@ -5,19 +5,14 @@ export const registerUser = async (userData) => {
     return data;
 };
 
-export const loginUser = async (credentials) => {
-    const { data } = await API.post("/auth/login", credentials);
 
-    localStorage.setItem("userInfo", JSON.stringify(data));
-
+export const loginUser = async (userData) => {
+    const { data } = await API.post("/auth/login", userData);
     return data;
 };
+
 
 export const getUserProfile = async () => {
-    const { data } = await API.get("/auth/profile");
+    const { data } = await API.get("/profile");
     return data;
-};
-
-export const logoutUser = () => {
-    localStorage.removeItem("userInfo");
 };

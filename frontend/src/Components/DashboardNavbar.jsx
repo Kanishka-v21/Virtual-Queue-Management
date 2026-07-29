@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 export default function DashboardNavbar() {
     const navigate = useNavigate();
     const { logout } = useAuth();
-
+    const { user } = useAuth();
     const handleProfile = () => {
         navigate("/profile");
     };
@@ -29,7 +29,7 @@ export default function DashboardNavbar() {
                     <FaUserCircle className="profile-icon" />
                     <span></span>
                 </div>
-    
+                
                 <button
                     onClick={handleProfile}
                     className="bg-cyan-600 text-white px-5 py-2 rounded-lg hover:bg-cyan-700 transition">
@@ -41,6 +41,16 @@ export default function DashboardNavbar() {
                 className="w-full bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700">
                 Logout
             </button>
+            {
+            user?.role === "admin" && (
+                <button
+                    onClick={() => navigate("/admin")}
+                    className="bg-purple-600 text-white px-5 py-2 rounded-lg hover:bg-purple-700"
+                >
+                    Admin Panel
+                </button>
+    )
+}
             </div>
         </nav>
     );

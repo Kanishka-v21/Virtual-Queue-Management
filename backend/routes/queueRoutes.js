@@ -19,4 +19,9 @@ router.get("/completed", protect, adminOnly, getCompletedQueue);
 router.patch("/skip", protect, adminOnly, skipCustomer);
 router.patch("/recall/:id",protect, adminOnly, recallCustomer);
 router.delete("/reset",protect, adminOnly, resetQueue);
+router.get("/test", (req, res) => {
+    res.json({
+        message: "Queue routes working"
+    });
+});
 module.exports = router;

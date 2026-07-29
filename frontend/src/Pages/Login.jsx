@@ -9,30 +9,34 @@ function Login() {
      const navigate = useNavigate();
      const [loading, setLoading] = useState(false);
      const { login } = useAuth();
-     const handleSubmit = async (e) => {
-    e.preventDefault();
 
-    try {
-        setLoading(true);
+   const handleSubmit = async (e) => {
+  e.preventDefault();
 
-        const user = await loginUser({
-            email,
-            password,
-        });
+  try {
+    setLoading(true);
 
-        login(user);
+    const loggedInUser = await loginUser({
+      email,
+      password,
+    });
+    console.log("Logged in user:", loggedInUser);
+    login(loggedInUser);
 
-        navigate("/dashboard");
-
-    } catch (error) {
-        alert(
-            error.response?.data?.message ||
-            "Invalid email or password"
-        );
-    } finally {
-        setLoading(false);
+    if (loggedInUser.role === "admin") {
+      navigate("/admin");
+    } else {
+      console.log("Navigating...");
+      navigate("/dashboard");
     }
+  } catch (error) {
+    console.error(error);
+    alert("Invalid email or password");
+  } finally {
+    setLoading(false);
+  }
 };
+
         
         return (
          <div className = "min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 flex items-center justify-center px-4">

@@ -1,41 +1,87 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+    createContext,
+    useContext,
+    useState,
+    useEffect
+} from "react";
+
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        const storedUser = localStorage.getItem("userInfo");
+export const AuthProvider = ({children}) => {
 
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
+
+    const [user,setUser] = useState(null);
+
+
+    useEffect(()=>{
+
+        const storedUser =
+        localStorage.getItem("userInfo");
+
+
+        if(storedUser){
+
+            setUser(
+                JSON.parse(storedUser)
+            );
+
         }
-    }, []);
 
-    const login = (userData) => {
-        localStorage.setItem("userInfo", JSON.stringify(userData));
+
+    },[]);
+
+
+
+    const login = (userData)=>{
+
         setUser(userData);
+
+        localStorage.setItem(
+            "userInfo",
+            JSON.stringify(userData)
+        );
+
     };
 
-    const logout = () => {
-        localStorage.removeItem("userInfo");
+
+
+    const logout = ()=>{
+
         setUser(null);
+
+        localStorage.removeItem(
+            "userInfo"
+        );
+
     };
 
-    return (
+
+
+    return(
+
         <AuthContext.Provider
-            value={{
-                user,
-                login,
-                logout,
-            }}
+        value={{
+            user,
+            login,
+            logout
+        }}
         >
+
             {children}
+
         </AuthContext.Provider>
+
     );
+
+
 };
 
-export const useAuth = () => {
+
+
+export const useAuth = ()=>{
+
     return useContext(AuthContext);
+
 };
