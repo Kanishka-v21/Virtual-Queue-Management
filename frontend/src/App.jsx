@@ -13,12 +13,9 @@ import Settings from "./Pages/Settings";
 
 import ProtectedRoute from "./Components/ProtectedRoute";
 import AdminRoute from "./Components/AdminRoute";
-
 import { useEffect } from "react";
 import { getUserProfile } from "./services/authService";
 import "./App.css";
-
-
 function App() {
 
   useEffect(() => {
@@ -30,10 +27,8 @@ function App() {
         console.error(error.response?.data || error.message);
       }
     };
-
     fetchProfile();
   }, []);
-
 
   return (
     <BrowserRouter>
@@ -43,12 +38,11 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-
+         <Route path="/register" element={<Register />} />
 
         {/* Protected User Routes */}
         <Route element={<ProtectedRoute />}>
-
+          
           <Route path="/about" element={<About />} />
           <Route path="/features" element={<Features />} />
           <Route path="/dashboard" element={<Dashboard />} />

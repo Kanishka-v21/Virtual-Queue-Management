@@ -7,7 +7,7 @@ function Register() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const [role, setRole] = useState("user");
 
     const navigate = useNavigate();
     const { login } = useAuth();
@@ -15,36 +15,27 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (password !== confirmPassword) {
-            alert("Passwords do not match");
-            return;
-        }
-
         try {
-            const formData = {
+            const response = await registerUser({
                 name,
                 email,
                 password,
-            };
+                role,
+            });
 
-            const user = await registerUser(formData);
+            localStorage.setItem("token", response.token);
+            login(response.user);
 
-            // If backend returns user + token
-            if (user) {
-                login(user);
-                navigate("/dashboard");
-            } else {
-                navigate("/login");
-            }
+            alert("Registration Successful!");
+
+            navigate("/dashboard");
         } catch (error) {
             console.error(error);
 
             alert(
                 error.response?.data?.message ||
-                "Registration failed"
+                "Registration Failed"
             );
-
-            navigate("/login");
         }
     };
 
@@ -54,18 +45,18 @@ function Register() {
                 onSubmit={handleSubmit}
                 className="bg-white w-full max-w-md p-8 rounded-2xl shadow-xl"
             >
-                <h2 className="text-4xl font-bold text-center text-cyan-400 mb-8">
+                <h2 className="text-4xl font-bold text-center text-cyan-500 mb-2">
                     Create Account
                 </h2>
 
-                <p className="text-center text-gray-500 mb-6">
+                <p className="text-center text-gray-500 mb-8">
                     Join QueueFlow today
                 </p>
 
                 <input
                     type="text"
                     placeholder="Full Name"
-                    className="w-full border border-gray-300 rounded-lg p-3 mb-4 outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-lg p-3 mb-4 outline-none focus:ring-2 focus:ring-cyan-500"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
@@ -74,7 +65,7 @@ function Register() {
                 <input
                     type="email"
                     placeholder="Email Address"
-                    className="w-full border border-gray-300 rounded-lg p-3 mb-4 outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-lg p-3 mb-4 outline-none focus:ring-2 focus:ring-cyan-500"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -83,24 +74,23 @@ function Register() {
                 <input
                     type="password"
                     placeholder="Password"
-                    className="w-full border border-gray-300 rounded-lg p-3 mb-4 outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-lg p-3 mb-6 outline-none focus:ring-2 focus:ring-cyan-500"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-
-                <input
-                    type="password"
-                    placeholder="Confirm Password"
-                    className="w-full border border-gray-300 rounded-lg p-3 mb-6 outline-none focus:ring-2 focus:ring-blue-500"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                />
+                <select
+                    className="w-full border border-gray-300 rounded-lg p-3 mb-4 outline-none focus:ring-2 focus:ring-cyan-500"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                >
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
 
                 <button
                     type="submit"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-300"
+                    className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-3 rounded-lg transition duration-300"
                 >
                     Register
                 </button>
@@ -109,7 +99,7 @@ function Register() {
                     Already have an account?{" "}
                     <Link
                         to="/login"
-                        className="text-blue-600 font-semibold hover:underline"
+                        className="text-cyan-600 font-semibold hover:underline"
                     >
                         Login
                     </Link>

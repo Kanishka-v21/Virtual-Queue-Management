@@ -2,42 +2,33 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 const protect = async (req, res, next) => {
-  try {
-    let token;
+    try {
+        let token;
 
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer ")
-    ) {
-      token = req.headers.authorization.split(" ")[1];
+        if (
+            req.headers.authorization &&
+            req.headers.authorization.startsWith("Bearer")
+        ) {
+            token = req.headers.authorization.split(" ")[1];
 
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      req.user = await User.findById(decoded.id).select("-password");
+            req.user = await User.findById(decoded.id).select("-password");
 
-      if (!req.user) {
+            next();
+        } else {
+            return res.status(401).json({
+                success: false,
+                message: "Not authorized, no token",
+            });
+        }
+    } catch (error) {
         return res.status(401).json({
-          success: false,
-          message: "User not found.",
+            success: false,
+            message: "Not authorized",
         });
-      }
-
-      return next();
     }
-
-    return res.status(401).json({
-      success: false,
-      message: "No token provided.",
-    });
-
-  } catch (error) {
-    return res.status(401).json({
-      success: false,
-      message: "Invalid or expired token.",
-    });
-  }
 };
 
-module.exports = {
-  protect,
-};
+module.exports = { protect };
+
