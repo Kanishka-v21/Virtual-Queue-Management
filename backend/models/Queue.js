@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const queueSchema = new mongoose.Schema(
    {
+    user:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref:"User",
+    required:true
+},
     tokenNumber: {
         type: Number,
         required: true,
@@ -19,6 +24,7 @@ const queueSchema = new mongoose.Schema(
         type: String,
         required: true,
     },
+    
     status: {
         type: String,
         enum: ["Waiting", "Serving", "Skipped", "Completed", "Cancelled"],

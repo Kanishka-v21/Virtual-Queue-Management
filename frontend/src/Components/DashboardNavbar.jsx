@@ -11,10 +11,13 @@ export default function DashboardNavbar() {
         navigate("/profile");
     };
 
-    const handleLogout = () => {
-            logout();
-            navigate("/login");
-    }
+    const handleLogout=()=>{
+
+    logout();
+
+    navigate("/login");
+
+};
     return (
         <nav className ="dashboard-navbar">
             <div className="dashboard-logo">

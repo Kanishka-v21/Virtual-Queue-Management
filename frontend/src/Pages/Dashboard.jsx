@@ -1,661 +1,301 @@
 import {
-    Ticket,
-    Users,
-    Clock3,
-    Activity,
-    RefreshCw,
-    CheckCircle,
-    UserPlus,
-    Bell,
-    Sparkles,
-    TrendingUp
-} from "lucide-react";
-
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+useEffect,
+useState
+} from "react";
 
 import {
-    getQueuePosition,
-    getQueueByToken,
-    getCurrentCustomer,
-    getWaitingQueue
+getMyQueue
 } from "../services/queueService";
 
+import {
+useAuth
+} from "../context/AuthContext";
 
-export default function Dashboard() {
+import DashboardNavbar from "../Components/DashboardNavbar";
 
-    const navigate = useNavigate();
+import {
+Ticket,
+Clock,
+Users
+} from "lucide-react";
 
-    const [queue, setQueue] = useState(null);
-    const [position, setPosition] = useState(null);
-    const [currentCustomer, setCurrentCustomer] = useState(null);
-    const [waitingCount, setWaitingCount] = useState(0);
 
-    const [loading, setLoading] = useState(true);
-    const [refreshing, setRefreshing] = useState(false);
-    const [error, setError] = useState("");
 
+export default function Dashboard(){
 
 
-    const loadDashboard = async () => {
+const {user}=useAuth();
 
-                try {
 
-                    setError("");
+const [queue,setQueue]=useState(null);
 
-                    const queueId =
-                        localStorage.getItem("queueId");
+const [loading,setLoading]=useState(true);
 
 
-                    if(queueId){
 
-                        const positionData =
-                            await getQueuePosition(queueId);
+const loadQueue=async()=>{
 
 
-                        setPosition(positionData);
+try{
 
 
+const data=
+await getMyQueue();
 
-                        const tokenData =
-                            await getQueueByToken(
-                                positionData.tokenNumber
-                            );
 
+setQueue(data);
 
-                        setQueue(tokenData);
 
-                        }
-                    try{
-                        const current =
-                            await getCurrentCustomer();
 
-                        setCurrentCustomer(
-                            current.customer || null
-                        );
-                    }
-                    catch{
+}catch(error){
 
-                        setCurrentCustomer(null);
 
-                    }
-                    try{
-                        const waiting =
-                            await getWaitingQueue();
+console.log(
+error.response?.data
+);
 
 
-                        setWaitingCount(
-                            waiting.total || 0
-                        );
 
+}
+finally{
 
-                    }
-                    catch{
+setLoading(false);
 
-                        setWaitingCount(0);
+}
 
-                    }
 
+};
 
-                }
-                catch(error){
 
-                    console.log(error);
 
-                    setError(
-                        error.response?.data?.message ||
-                        "Unable to load dashboard"
-                    );
+useEffect(()=>{
 
-                }
-                finally{
+loadQueue();
 
-                    setLoading(false);
 
-                }
+const interval=
+setInterval(
+loadQueue,
+10000
+);
 
-            };
-            useEffect(()=>{
-                loadDashboard();
-            },[]);
-            const handleRefresh = async()=>{
 
-                setRefreshing(true);
+return ()=>clearInterval(interval);
 
-                await loadDashboard();
 
-                setRefreshing(false);
+},[]);
 
-            };
-            const progress =
-                waitingCount === 0
-                ?
-                100
-                :
-                Math.round(
-                    ((waitingCount -
-                    (position?.peopleAhead || 0))
-                    /
-                    waitingCount)
-                    *
-                    100
-                );
-            if(loading){
-                return(
-                    <div className="
-                    min-h-screen
-                    bg-slate-950
-                    text-white
-                    flex
-                    items-center
-                    justify-center
-                    text-2xl
-                    ">
-                        Loading Dashboard...
 
-                    </div>
 
-                );
 
-            }
+return(
 
+<div className="min-h-screen bg-slate-950 text-white">
 
 
+<DashboardNavbar/>
 
-            return(
 
-        <div className="
-        min-h-screen
-        bg-slate-950
-        text-white
-        p-8
-        ">
+<div className="pt-32 px-6 max-w-7xl mx-auto">
 
 
-        <div className="max-w-7xl mx-auto">
 
+<h1 className="text-5xl font-bold">
 
+Welcome,
+<span className="text-cyan-400">
+ {user.name}
+</span>
 
-        {/* HEADER */}
+</h1>
 
-        <div className="
-        flex
-        justify-between
-        items-center
-        mb-10
-        ">
 
+<p className="text-slate-400 mt-3 text-lg">
 
-        <div>
+Track your queue without waiting in line.
 
-        <h1 className="
-        text-4xl
-        font-bold
-        text-cyan-400
-        ">
+</p>
 
-        My Queue Dashboard
 
-        </h1>
 
 
-        <p className="text-slate-400 mt-2">
 
-        Track your token and waiting status.
+{
+loading?
 
-        </p>
 
+<p className="mt-10">
+Loading queue...
+</p>
 
-        </div>
 
 
+:
 
-        <button
 
-        onClick={handleRefresh}
+queue?
 
-        disabled={refreshing}
+<div className="grid md:grid-cols-3 gap-8 mt-12">
 
-        className="
-        bg-cyan-500
-        text-black
-        px-5
-        py-3
-        rounded-xl
-        flex
-        items-center
-        gap-2
-        disabled:opacity-50
-        "
 
-        >
+<div className="bg-slate-900 p-8 rounded-2xl">
 
-        <RefreshCw size={18}/>
 
-        {
-        refreshing
-        ?
-        "Refreshing..."
-        :
-        "Refresh"
-        }
+<Ticket
+className="text-cyan-400"
+size={40}
+/>
 
-        </button>
 
+<p className="mt-5 text-slate-400">
 
-        </div>
+Token Number
 
+</p>
 
 
+<h2 className="text-4xl font-bold">
 
+Q-{queue.queue.tokenNumber}
 
-        {
-        error &&
+</h2>
 
-        <div className="
-        bg-red-500/20
-        text-red-400
-        p-4
-        rounded-xl
-        mb-6
-        ">
 
-        {error}
+</div>
 
-        </div>
 
-        }
 
 
 
+<div className="bg-slate-900 p-8 rounded-2xl">
 
 
-        {/* TOP CARDS */}
+<Users
+className="text-cyan-400"
+size={40}
+/>
 
 
-        <div className="
-        grid
-        lg:grid-cols-4
-        md:grid-cols-2
-        gap-6
-        mb-10
-        ">
+<p className="mt-5 text-slate-400">
 
+People Ahead
 
+</p>
 
-        <div className="bg-slate-900 p-6 rounded-xl">
 
-        <Ticket className="text-cyan-400 mb-4"/>
+<h2 className="text-4xl font-bold">
 
-        <p>Your Token</p>
+{queue.peopleAhead}
 
-        <h2 className="text-4xl font-bold">
+</h2>
 
-        {
-        queue
-        ?
-        `#${queue.tokenNumber}`
-        :
-        "--"
-        }
 
-        </h2>
+</div>
 
-        </div>
 
 
 
 
+<div className="bg-slate-900 p-8 rounded-2xl">
 
-        <div className="bg-slate-900 p-6 rounded-xl">
 
-        <Users className="text-yellow-400 mb-4"/>
+<Clock
+className="text-cyan-400"
+size={40}
+/>
 
-        <p>People Ahead</p>
 
-        <h2 className="text-4xl font-bold">
+<p className="mt-5 text-slate-400">
 
-        {
-        position?.peopleAhead ??
-        "--"
-        }
+Estimated Wait
 
-        </h2>
+</p>
 
-        </div>
 
-        <div className="bg-slate-900 p-6 rounded-xl">
+<h2 className="text-4xl font-bold">
 
-        <Clock3 className="text-green-400 mb-4"/>
+{queue.estimatedWaitTime}
+ min
 
-        <p>Estimated Wait</p>
+</h2>
 
-        <h2 className="text-3xl font-bold">
 
-        {
-        position?.estimatedWaitTime
-        ?
-        `${position.estimatedWaitTime} min`
-        :
-        "--"
-        }
+</div>
 
-        </h2>
 
-        </div>
 
-        <div className="bg-slate-900 p-6 rounded-xl">
+<div className="md:col-span-3 bg-slate-900 rounded-2xl p-8">
 
-        <Activity className="text-blue-400 mb-4"/>
 
-        <p>Status</p>
+<h2 className="text-2xl font-bold">
 
-        <h2 className="text-3xl font-bold">
+Queue Status
 
-        {
-        queue?.status ||
-        "--"
-        }
+</h2>
 
-        </h2>
 
-        </div>
+<p className="mt-4 text-cyan-400 text-xl">
 
+{queue.queue.status}
 
-        </div>
-        {/* LIVE QUEUE INSIGHTS */}
+</p>
 
-        <div className="bg-slate-900 rounded-xl p-6 mb-10">
 
-        <div className="flex items-center gap-3 mb-6">
+</div>
 
-        <Sparkles className="text-cyan-400"/>
 
-        <h2 className="text-2xl font-semibold">
-        Live Queue Insights
-        </h2>
+</div>
 
-        </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
 
-        <div className="bg-slate-800 rounded-xl p-5">
+:
 
-        <Users className="text-yellow-400 mb-3"/>
 
-        <p className="text-slate-400">
-        Customers Waiting
-        </p>
+<div className="mt-12 bg-slate-900 rounded-2xl p-10">
 
-        <h2 className="text-4xl font-bold mt-2">
-        {waitingCount}
-        </h2>
 
-        </div>
+<h2 className="text-3xl font-bold">
 
-        <div className="bg-slate-800 rounded-xl p-5">
+No Active Queue
 
-        <TrendingUp className="text-green-400 mb-3"/>
+</h2>
 
-        <p className="text-slate-400">
-        Your Position
-        </p>
 
-        <h2 className="text-4xl font-bold mt-2">
-        {
-        position
-        ?
-        (position.peopleAhead + 1)
-        :
-        "--"
-        }
-        </h2>
+<p className="text-slate-400 mt-3">
 
-        </div>
+Join a queue to start tracking your position.
 
-        <div className="bg-slate-800 rounded-xl p-5">
+</p>
 
-        <Bell className="text-cyan-400 mb-3"/>
 
-        <p className="text-slate-400">
-        Queue Update
-        </p>
+<button
 
-        <p className="mt-2 leading-relaxed">
+onClick={()=>
+window.location.href="/joinqueue"
+}
 
-        {
-        queue
-        ?
+className="mt-6 bg-cyan-500 px-6 py-3 rounded-lg text-black font-bold"
 
-        queue.status === "waiting"
-        ?
+>
 
-        `There are ${position?.peopleAhead ?? 0} customer(s) ahead of you.`
+Join Queue
 
-        :
+</button>
 
-        queue.status === "serving"
 
-        ?
+</div>
 
-        "You're currently being served."
 
-        :
+}
 
-        queue.status === "completed"
-        ?
-        "Your service has been completed."
-        :
-        queue.status
-        :
-        "You haven't joined the queue yet."
 
-        }
 
-        </p>
+</div>
 
-        </div>
 
-        </div>
+</div>
 
-        </div>
-        {/* DETAILS */}
 
+);
 
-        <div className="
-        grid
-        lg:grid-cols-2
-        gap-8
-        ">
-
-
-
-        <div className="
-        bg-slate-900
-        rounded-xl
-        p-6
-        ">
-
-
-        <h2 className="text-2xl font-semibold mb-6">
-
-        Ticket Details
-
-        </h2>
-
-
-        <div className="space-y-4">
-
-
-        <p className="flex justify-between">
-
-        <span>
-        Service
-        </span>
-
-        <span>
-        {queue?.serviceName || "--"}
-        </span>
-
-        </p>
-
-
-
-        <p className="flex justify-between">
-
-        <span>
-        Joined At
-        </span>
-
-        <span>
-
-        {
-        queue?.joinedAt
-        ?
-        new Date(queue.joinedAt)
-        .toLocaleString()
-        :
-        "--"
-        }
-
-        </span>
-
-        </p>
-
-
-
-        </div>
-
-
-        </div>
-
-
-
-
-
-
-
-
-
-        <div className="
-        bg-slate-900
-        rounded-xl
-        p-6
-        ">
-
-
-        <h2 className="text-2xl font-semibold mb-6">
-
-        Current Counter
-
-        </h2>
-
-
-        <div className="
-        flex
-        items-center
-        gap-5
-        ">
-
-
-        <CheckCircle
-        className="text-green-400"
-        size={45}
-        />
-
-
-        <div>
-
-        <p>
-        Currently Serving
-        </p>
-
-
-        <h2 className="
-        text-4xl
-        font-bold
-        text-cyan-400
-        ">
-
-        {
-        currentCustomer
-        ?
-        `#${currentCustomer.tokenNumber}`
-        :
-        "--"
-        }
-
-        </h2>
-
-
-        </div>
-
-
-        </div>
-
-
-        </div>
-
-
-        </div>
-
-
-
-
-
-
-
-        {/* JOIN QUEUE BUTTON */}
-
-
-        {
-        !queue &&
-
-        <div className="
-        mt-10
-        flex
-        justify-center
-        ">
-
-
-        <button
-        onClick={() => navigate("/joinqueue")}
-        className="
-        bg-gradient-to-r
-        from-green-500
-        to-cyan-500
-        hover:scale-105
-        transition
-        duration-300
-        text-black
-        px-8
-        py-4
-        rounded-xl
-        font-semibold
-        flex
-        items-center
-        gap-3
-        shadow-lg
-        "
-        >
-        <UserPlus/>
-
-        Join Queue
-
-        </button>
-
-
-        </div>
-
-        }
-
-
-
-
-        </div>
-
-        </div>
-
-            );
-
-        }
+}

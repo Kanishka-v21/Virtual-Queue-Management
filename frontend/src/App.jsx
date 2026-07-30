@@ -11,24 +11,47 @@ import AdminDashboard from "./Pages/AdminDashboard";
 import Profile from "./Pages/Profile";
 import Settings from "./Pages/Settings";
 
+
 import ProtectedRoute from "./Components/ProtectedRoute";
 import AdminRoute from "./Components/AdminRoute";
 import { useEffect } from "react";
 import { getUserProfile } from "./services/authService";
+import { getMyQueue } from "../services/queueService";
+import { useAuth } from "./context/AuthContext";
 import "./App.css";
 function App() {
+  const data = await getMyQueue();
+  const { user } = useAuth();
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const user = await getUserProfile();
-        console.log(user);
-      } catch (error) {
-        console.error(error.response?.data || error.message);
-      }
-    };
-    fetchProfile();
-  }, []);
+
+  const fetchProfile = async () => {
+
+    if(!user){
+      return;
+    }
+
+    try {
+
+      const profile = await getUserProfile();
+
+      console.log("Profile:", profile);
+
+    } 
+    catch(error){
+
+      console.error(
+        error.response?.data || error.message
+      );
+
+    }
+
+  };
+
+
+  fetchProfile();
+
+},[user]);
 
   return (
     <BrowserRouter>
@@ -39,14 +62,14 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
          <Route path="/register" element={<Register />} />
+         <Route path="/about" element={<About />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/joinqueue" element={<JoinQueue />} />
 
         {/* Protected User Routes */}
         <Route element={<ProtectedRoute />}>
           
-          <Route path="/about" element={<About />} />
-          <Route path="/features" element={<Features />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/joinqueue" element={<JoinQueue />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
 

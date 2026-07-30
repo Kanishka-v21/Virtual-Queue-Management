@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { joinQueue, getQueue, updateQueueStatus, getQueueByToken, getDashboardStats, deleteQueue, getQueuePosition, serveNextCustomer, getCurrentCustomer, getWaitingQueue, getCompletedQueue, skipCustomer, recallCustomer, resetQueue } = require("../controllers/queueController");
+const { joinQueue, getQueue, updateQueueStatus, getQueueByToken, getDashboardStats, deleteQueue, getQueuePosition, serveNextCustomer, getCurrentCustomer, getWaitingQueue, getCompletedQueue, skipCustomer, recallCustomer, resetQueue, getMyQueues } = require("../controllers/queueController");
 const { protect } = require("../middleware/authMiddleware");
 const { adminOnly } = require("../middleware/roleMiddleware");
 
@@ -19,6 +19,9 @@ router.get("/completed", protect, adminOnly, getCompletedQueue);
 router.patch("/skip", protect, adminOnly, skipCustomer);
 router.patch("/recall/:id",protect, adminOnly, recallCustomer);
 router.delete("/reset",protect, adminOnly, resetQueue);
+const {
+getMyQueues
+}=require("../controllers/queueController");
 router.get("/test", (req, res) => {
     res.json({
         message: "Queue routes working"

@@ -99,25 +99,32 @@ const loginUser = async (req, res) => {
 
   }
 };
-const getUserProfile = async (req, res) => {
-    try {
-        // req.user is set by the protect middleware
-        const user = await User.findById(req.user._id).select("-password");
+const getUserProfile = async(req,res)=>{
 
-        if (!user) {
-            return res.status(404).json({
-                message: "User not found"
-            });
-        }
+    try{
 
-        res.status(200).json(user);
+        res.status(200).json({
 
-    } catch (error) {
-        res.status(500).json({
-            message: "Server Error",
-            error: error.message
+            success:true,
+
+            user:req.user
+
         });
+
+
     }
+    catch(error){
+
+        res.status(500).json({
+
+            success:false,
+
+            message:error.message
+
+        });
+
+    }
+
 };
 
 module.exports = {

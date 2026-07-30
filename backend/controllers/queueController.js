@@ -76,23 +76,81 @@ const getQueue = async (req, res) => {
   }
 };
 
-const joinQueue = async(req, res) => {
-    try {
-        const { customerName, customerEmail, serviceName } = req.body;
-        const lastToken = await Queue.findOne().sort({ tokenNumber: -1 });
-        const tokenNumber = lastToken ? lastToken.tokenNumber + 1 : 1;
-        const queue = await Queue.create({tokenNumber, customerName, customerEmail, serviceName, status: "Waiting",});
+const joinQueue = async(req,res)=>{
 
-        console.log("Collection:", Queue.collection.name);
-        console.log("Created Queue:", queue);
-        console.log("ID:", queue._id);
+try{
 
-        res.status(201).json(queue);
-    } catch(error) {
-        res.status(500).json({
-            message: error.message,
-        });
-    }
+
+const {
+customerName,
+customerEmail,
+serviceName
+}=req.body;
+
+
+
+if(!customerName || !customerEmail || !serviceName){
+
+return res.status(400).json({
+
+success:false,
+
+message:"All fields are required"
+
+});
+
+}
+
+
+
+const lastToken=await Queue.findOne()
+.sort({
+tokenNumber:-1
+});
+
+
+
+const tokenNumber=
+lastToken?
+lastToken.tokenNumber+1
+:
+1;
+
+
+
+const queue = await Queue.create({
+
+    user:req.user._id,
+
+    customerName,
+    customerEmail,
+    serviceName,
+
+    tokenNumber,
+
+    status:"Waiting"
+
+});
+
+
+res.status(201).json(queue);
+
+
+
+}catch(error){
+
+
+res.status(500).json({
+
+success:false,
+
+message:error.message
+
+});
+
+
+}
+
 };
 
 const updateQueueStatus = async (req, res) => {
@@ -432,6 +490,43 @@ const getCompletedQueue = async (req, res) => {
     });
   }
 };
+const getMyQueues = async(req,res)=>{
+
+try{
+
+const queue = await Queue.findOne({
+    user:req.user._id,
+    status:{
+        $in:[
+            "Waiting",
+            "Serving"
+        ]
+    }
+});
+
+
+if(!queue){
+
+return res.status(404).json({
+    message:"No active queue"
+});
+
+}
+
+
+res.json(queue);
+
+
+}
+catch(error){
+
+res.status(500).json({
+message:error.message
+});
+
+}
+
+};
 
 const resetQueue = async (req, res) => {
   try {
@@ -460,4 +555,4 @@ const resetQueue = async (req, res) => {
     });
   }
 };
-module.exports = { joinQueue, getQueue, updateQueueStatus, getQueueByToken, getDashboardStats, deleteQueue, getQueuePosition, serveNextCustomer, getCurrentCustomer, getWaitingQueue, getCompletedQueue, skipCustomer, recallCustomer, resetQueue, };
+module.exports = { joinQueue, getQueue, updateQueueStatus, getQueueByToken, getDashboardStats, deleteQueue, getQueuePosition, serveNextCustomer, getCurrentCustomer, getWaitingQueue, getCompletedQueue, skipCustomer, recallCustomer, resetQueue, getMyQueues, };

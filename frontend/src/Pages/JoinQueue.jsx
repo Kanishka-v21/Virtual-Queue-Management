@@ -1,423 +1,193 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { joinQueue } from "../services/queueService";
-import { useAuth } from "../context/AuthContext";
-import "./JoinQueue.css";
+import {useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {joinQueue} from "../services/queueService";
+import {useAuth} from "../context/AuthContext";
 
 
-export default function JoinQueue() {
-
-    const navigate = useNavigate();
-
-    const { user } = useAuth();
+export default function JoinQueue(){
 
 
-    const [branch,setBranch] = useState("");
-    const [service,setService] = useState("");
+const {user}=useAuth();
 
-    const [loading,setLoading] = useState(false);
+const navigate=useNavigate();
 
-    const [queue,setQueue] = useState(null);
+const [customerName, setCustomerName] = useState("");
+const [customerEmail, setCustomerEmail] = useState("");
+const [serviceName, setServiceName]=useState("");
 
+const [loading,setLoading]=useState(false);
 
-
-    const handleJoinQueue = async()=>{
-
-
-        if(!branch || !service){
-
-            alert(
-                "Please select branch and service"
-            );
-
-            return;
-
-        }
-
-
-        try{
-
-
-            setLoading(true);
-
-
-            const response = await joinQueue({
-
-                customerName:
-                user?.name || "Guest User",
-
-                customerEmail:
-                user?.email || "guest@gmail.com",
-
-                serviceName:
-                service
-
-            });
+const [queue,setQueue]=useState(null);
 
 
 
-            console.log(response);
+const handleJoin = async()=>{
+
+
+if(!serviceName){
+
+alert("Please select service");
+
+return;
+
+}
+
+
+if(!user){
+
+alert("Please login first");
+
+navigate("/login");
+
+return;
+
+}
 
 
 
-            // Save queue id for dashboard
+try{
 
-            localStorage.setItem(
-                "queueId",
-                response._id
-            );
+
+setLoading(true);
 
 
 
-            setQueue(response);
+const data = await joinQueue({
+
+customerName:user.name,
+
+customerEmail:user.email,
+
+serviceName
+
+});
 
 
 
-        }
-        catch(error){
-
-            console.log(error);
-
-            alert(
-                error.response?.data?.message ||
-                "Unable to join queue"
-            );
-
-        }
-        finally{
-
-            setLoading(false);
-
-        }
-
-
-    };
+console.log("Queue Response:", data);
 
 
 
+setQueue(data);
 
 
 
-return (
-
-<div className="join-container">
-
-
-<div className="join-card">
+alert(
+`Your Token Number is Q-${data.tokenNumber}`
+);
 
 
 
-<h1>
-Join A Queue
+navigate("/dashboard");
+
+
+
+}
+catch(error){
+
+
+console.log(
+error.response?.data || error.message
+);
+
+
+
+alert(
+error.response?.data?.message ||
+"Unable to join queue"
+);
+
+
+
+}
+finally{
+
+
+setLoading(false);
+
+
+}
+
+
+};
+
+
+return(
+
+<div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
+
+
+<div className="bg-slate-900 p-10 rounded-2xl w-full max-w-md">
+
+
+<h1 className="text-3xl font-bold text-cyan-400 mb-8">
+
+Join Queue
+
 </h1>
 
 
-<p>
-Select your branch and service to generate your virtual token.
-</p>
-
-
-
-
-
-<div className="input-group">
-
-
-<label>
-Select Branch
-</label>
-
 
 <select
 
-value={branch}
+className="w-full p-3 rounded-lg text-black mb-6"
 
-onChange={
-(e)=>setBranch(e.target.value)
-}
+value={serviceName}
+
+onChange={(e)=>setServiceName(e.target.value)}
 
 >
 
 
 <option value="">
-Choose Branch
-</option>
-
-
-<option>
-MSIT Main Campus
-</option>
-
-
-</select>
-
-
-
-</div>
-
-
-
-
-
-
-<div className="input-group">
-
-
-<label>
 Select Service
-</label>
-
-
-<select
-
-value={service}
-
-onChange={
-(e)=>setService(e.target.value)
-}
-
->
-
-
-<option value="">
-Choose Service
 </option>
 
 
 <option>
-Document Verification
+General Service
 </option>
 
 
 <option>
-Fee Payment
+Consultation
 </option>
 
 
 <option>
-Certificate Collection
+Payment
 </option>
 
 
 <option>
-Student Help Desk
+Support
 </option>
 
 
 </select>
-
-
-
-</div>
-
-
-
-
-
-<div className="queue-info">
-
-
-
-<div className="info-box">
-
-
-<h3>
-Estimated Service Time
-</h3>
-
-
-<p>
-10 mins
-</p>
-
-
-</div>
-
-
-
-
-<div className="info-box">
-
-
-<h3>
-Current Status
-</h3>
-
-
-<p>
-Waiting
-</p>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
 
 
 
 <button
 
-className="join-btn"
-
-onClick={handleJoinQueue}
+onClick={handleJoin}
 
 disabled={loading}
 
+className="w-full bg-cyan-500 py-3 rounded-lg font-bold"
+
 >
 
 
 {
-loading
-?
-"Generating Token..."
+loading?
+"Joining..."
 :
 "Join Queue"
 }
-
-
 </button>
-
-
-
-
-</div>
-
-
-
-
-
-
-
-{
-queue &&
-
-
-<div className="popup-overlay">
-
-
-<div className="success-popup">
-
-
-
-<div className="success-icon">
-✓
-</div>
-
-
-
-<h2>
-Queue Joined Successfully!
-</h2>
-
-
-
-<p>
-Your virtual queue ticket has been generated.
-</p>
-
-
-
-
-
-<div className="ticket-result">
-
-
-
-<div>
-
-<span>
-🎟 Token Number
-</span>
-
-<h2>
-#{queue.tokenNumber}
-</h2>
-
-</div>
-
-
-
-
-<div>
-
-<span>
-📌 Status
-</span>
-
-<h3>
-{queue.status}
-</h3>
-
-</div>
-
-
-
-
-
-<div>
-
-<span>
-⏱ Estimated Wait
-</span>
-
-<h3>
-{queue.estimatedTime} mins
-</h3>
-
-</div>
-
-
-
-
-
-<div>
-
-<span>
-🏢 Service
-</span>
-
-<h3>
-{queue.serviceName}
-</h3>
-
-</div>
-
-
-
-
-</div>
-
-
-
-
-
-<button
-
-className="dashboard-btn"
-
-onClick={()=>
-navigate("/dashboard")
-}
-
->
-
-Go To Dashboard →
-
-</button>
-
 </div>
 </div>
-
-}
-
-</div>
-
 
 );
 
