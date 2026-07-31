@@ -1,5 +1,6 @@
 import React,{useState} from "react";
 import API from "../api/axios";
+import { successToast } from "../utils/toast";
 
 
 const AddQueue =()=>{
@@ -21,7 +22,7 @@ const response = await API.post("/queue",form);
 
 console.log(response.data);
 
-alert("Added to queue");
+successToast("Added to queue");
 
 }
 catch(error){

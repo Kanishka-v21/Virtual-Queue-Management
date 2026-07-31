@@ -1,7 +1,9 @@
 import"./Hero.css";
 import heroImage from "../assets/hero.png";
+import { useNavigate } from "react-router-dom";
 
 function Hero() {
+  const navigate = useNavigate();
     return (
     <section className="hero" id="home">
       <div className="hero-content">
@@ -20,8 +22,16 @@ function Hero() {
         </p>
 
         <div className="hero-buttons">
-          <button className="primary-btn">Get Started</button>
-          <button className="secondary-btn">Learn More</button>
+          <button
+
+onClick={()=>navigate("/register")}
+
+className="primary-btn">Get Started</button>
+          <button
+
+onClick={()=>navigate("/about")}
+
+className="secondary-btn">Learn More</button>
         </div>
       </div>
 

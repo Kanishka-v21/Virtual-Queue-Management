@@ -1,529 +1,287 @@
 import {
-  Users,
-  Ticket,
-  CheckCircle,
-  Clock3,
-  Activity,
-  BarChart3,
-  Play,
-  Pause,
-  RotateCcw,
-  RefreshCw,
+useEffect,
+useState
+} from "react";
+
+import DashboardNavbar from "../Components/DashboardNavbar";
+import {
+    successToast,
+    errorToast,
+    infoToast
+} from "../utils/toast";
+import {
+
+Users,
+Clock,
+CheckCircle,
+PlayCircle,
+Search,
+RotateCcw,
+Trash2,
+SkipForward,
+RefreshCw
+
 } from "lucide-react";
 
-import { useEffect, useState } from "react";
-
 import {
-  getDashboardStats,
-  getCurrentCustomer,
-  getAllQueues,
-  serveNextCustomer,
-  skipCustomer,
-  recallCustomer,
-  updateQueueStatus,
-  deleteQueue,
-  resetQueue,
+
+getDashboardStats,
+getAllQueues,
+serveNextCustomer,
+skipCustomer,
+recallCustomer,
+deleteQueue,
+resetQueue
+
 } from "../services/adminService";
+import { errorToast } from "../utils/toast";
 
+export default function AdminDashboard(){
 
-export default function AdminDashboard() {
+const [stats,setStats]=useState({
 
+total:0,
+waiting:0,
+serving:0,
+completed:0,
+cancelled:0
 
-  const [stats, setStats] = useState({
+});
 
-    total: 0,
-    waiting: 0,
-    serving: 0,
-    completed: 0,
-    cancelled: 0,
+const [queues,setQueues]=useState([]);
 
-  });
+const [loading,setLoading]=useState(true);
 
+const [search,setSearch]=useState("");
 
+const [status,setStatus]=useState("");
 
-  const [queue, setQueue] = useState([]);
+const [service,setService]=useState("");
 
-  const [currentCustomer, setCurrentCustomer] = useState(null);
+const [page,setPage]=useState(1);
 
+const [pages,setPages]=useState(1);
 
-  const [loading, setLoading] = useState(true);
+const limit=10;
 
-  const [actionLoading, setActionLoading] = useState(false);
+const loadDashboard=async()=>{
 
-  const [error, setError] = useState("");
+try{
 
+setLoading(true);
 
+const statsData=
+await getDashboardStats();
 
+setStats(statsData);
 
+const queueData=
+await getAllQueues(
 
-  /*
-      Percentage calculations
-      Based completely on backend stats
-  */
+page,
+limit,
+search,
+status,
+service,
+"asc"
 
+);
 
-  const completionPercentage =
-    stats.total === 0
-      ? 0
-      :
-      Math.round(
-        (stats.completed / stats.total) * 100
-      );
+setQueues(queueData.data);
 
+setPages(queueData.totalPages);
 
+}catch(error){
 
-  const waitingPercentage =
-    stats.total === 0
-      ? 0
-      :
-      Math.round(
-        (stats.waiting / stats.total) * 100
-      );
+console.log(error);
 
+}finally{
 
+setLoading(false);
 
-  const servingPercentage =
-    stats.total === 0
-      ? 0
-      :
-      Math.round(
-        (stats.serving / stats.total) * 100
-      );
+}
 
+};
 
+useEffect(()=>{
 
+loadDashboard();
 
+const interval=setInterval(
 
-  /*
-      Load dashboard data
+loadDashboard,
 
-      Backend:
-      /queue/dashboard/stats
-      /queue/current
-      /queue
-  */
+10000
 
+);
 
-  const loadDashboard = async () => {
+return()=>clearInterval(interval);
 
+},[page,search,status,service]);
+const handleServeNext=async()=>{
 
-    try {
+try{
 
+await serveNextCustomer();
 
-      setError("");
+loadDashboard();
 
+}catch(error){
 
+errorToast(
 
-      const statsData =
-        await getDashboardStats();
+error.response?.data?.message ||
 
+"Unable to serve customer"
 
+);
 
-      setStats(statsData);
+}
 
+};
 
+const handleSkip=async()=>{
 
+try{
 
+await skipCustomer();
 
-      try {
+loadDashboard();
 
+}catch(error){
 
-        const current =
-          await getCurrentCustomer();
+errorToast(
 
+error.response?.data?.message ||
 
+"Unable to skip"
 
-        setCurrentCustomer(
-          current.customer || null
-        );
+);
 
+}
 
-      }
+};
 
-      catch {
+const handleRecall=async(id)=>{
 
+try{
 
-        setCurrentCustomer(null);
+await recallCustomer(id);
 
+loadDashboard();
 
-      }
+}catch(error){
 
+errorToast(
 
+error.response?.data?.message ||
 
+"Unable to recall"
 
+);
 
-      const queueData =
-        await getAllQueues(
-          1,
-          50
-        );
+}
 
+};
 
+const handleDelete=async(id)=>{
 
-      setQueue(
-        queueData.data || []
-      );
+if(
 
+!window.confirm(
 
+"Delete customer?"
 
-    }
+)
 
+)
 
-    catch(error){
+return;
 
+try{
 
-      console.log(error);
+await deleteQueue(id);
 
+loadDashboard();
 
-      setError(
+}catch(error){
 
-        error.response?.data?.message ||
+errorToast(
 
-        "Unable to load dashboard"
+error.response?.data?.message ||
 
-      );
+"Unable to delete"
 
+);
 
-    }
+}
 
+};
 
-    finally{
+const handleReset=async()=>{
 
+if(
 
-      setLoading(false);
+!window.confirm(
 
+"Reset complete queue?"
 
-    }
+)
 
+)
 
-  };
+return;
 
+try{
 
+await resetQueue();
 
+loadDashboard();
 
+}catch(error){
 
+errorToast(
 
-  useEffect(()=>{
+error.response?.data?.message ||
 
+"Unable to reset"
 
-    loadDashboard();
+);
 
+}
 
+};
+return(
 
-    /*
-      Temporary REST refresh.
-      Will be replaced by Socket.IO later.
-    */
+<div className="min-h-screen bg-slate-950 text-white">
 
+<DashboardNavbar/>
 
-    const interval =
-      setInterval(
-        loadDashboard,
-        10000
-      );
+<div className="max-w-7xl mx-auto px-8 pt-32">
 
-
-
-    return ()=>clearInterval(interval);
-
-
-
-  },[]);
-
-
-
-
-
-
-
-
-
-  /*
-      Common action handler
-  */
-
-
-  const executeAction = async(action)=>{
-
-
-    try{
-
-
-      setActionLoading(true);
-
-
-      await action();
-
-
-      await loadDashboard();
-
-
-
-    }
-
-
-    catch(error){
-
-
-      alert(
-
-        error.response?.data?.message ||
-
-        "Action failed"
-
-      );
-
-
-    }
-
-
-    finally{
-
-
-      setActionLoading(false);
-
-
-    }
-
-
-  };
-
-
-
-
-
-
-
-
-
-  /*
-      Button handlers
-  */
-
-
-
-  const handleRefresh = ()=>{
-
-
-    executeAction(
-      async()=>{}
-    );
-
-
-  };
-
-
-
-
-
-  const handleServeNext = ()=>{
-
-
-    executeAction(
-      serveNextCustomer
-    );
-
-
-  };
-
-
-
-
-
-  const handleSkip = ()=>{
-
-
-    executeAction(
-      skipCustomer
-    );
-
-
-  };
-
-
-
-
-
-  const handleRecall = (id)=>{
-
-
-    executeAction(
-
-      ()=>recallCustomer(id)
-
-    );
-
-
-  };
-
-
-
-
-
-  const handleComplete = (id)=>{
-
-
-    executeAction(
-
-      ()=>updateQueueStatus(
-        id,
-        "Completed"
-      )
-
-    );
-
-
-  };
-
-
-
-
-
-  const handleDelete = (id)=>{
-
-
-    const confirmDelete =
-      window.confirm(
-        "Delete this customer?"
-      );
-
-
-
-    if(!confirmDelete)
-      return;
-
-
-
-    executeAction(
-
-      ()=>deleteQueue(id)
-
-    );
-
-
-  };
-
-
-
-
-
-  const handleReset = ()=>{
-
-
-    const confirmReset =
-      window.confirm(
-        "Reset complete queue?"
-      );
-
-
-
-    if(!confirmReset)
-      return;
-
-
-
-    executeAction(
-      resetQueue
-    );
-
-
-  };
-
-
-
-
-
-  if(loading){
-
-
-    return (
-
-      <div className="
-        min-h-screen
-        bg-slate-950
-        text-white
-        flex
-        justify-center
-        items-center
-        text-2xl
-      ">
-
-        Loading Dashboard...
-
-      </div>
-
-    );
-
-
-  }
-
-  if(error){
-    return (
-
-      <div className="
-        min-h-screen
-        bg-slate-950
-        text-red-400
-        flex
-        justify-center
-        items-center
-        text-xl
-      ">
-
-        {error}
-        return (
-
-<div className="min-h-screen bg-slate-950 text-white p-8">
-
-
-<div className="max-w-7xl mx-auto">
-
-
-
-{/* HEADER */}
-
-<div className="flex justify-between items-center mb-10">
-
+<div className="flex justify-between items-center">
 
 <div>
 
-<h1 className="text-4xl font-bold text-cyan-400">
+<h1 className="text-5xl font-bold">
+
 Admin Dashboard
+
 </h1>
 
+<p className="text-slate-400 mt-3">
 
-<p className="text-slate-400 mt-2">
-Monitor and manage queue operations.
+Manage the complete queue system.
+
 </p>
-
 
 </div>
 
-
-
-
-
-<div className="flex gap-3">
-
-
 <button
 
-onClick={handleRefresh}
+onClick={loadDashboard}
 
-disabled={actionLoading}
-
-className="
-bg-cyan-500
-hover:bg-cyan-400
-text-black
-px-5
-py-2
-rounded-xl
-disabled:opacity-50
-flex
-items-center
-gap-2
-"
+className="flex items-center gap-2 bg-cyan-500 px-5 py-3 rounded-xl"
 
 >
 
@@ -533,120 +291,24 @@ Refresh
 
 </button>
 
-
-
-
-
-<button
-
-onClick={handleServeNext}
-
-disabled={actionLoading}
-
-className="
-bg-green-500
-hover:bg-green-400
-text-black
-px-5
-py-2
-rounded-xl
-disabled:opacity-50
-"
-
->
-
-Call Next
-
-</button>
-
-
-
-
-
-<button
-
-onClick={handleSkip}
-
-disabled={actionLoading}
-
-className="
-bg-yellow-500
-hover:bg-yellow-400
-text-black
-px-5
-py-2
-rounded-xl
-disabled:opacity-50
-"
-
->
-
-Skip
-
-</button>
-
-
-
-
-
-<button
-
-onClick={handleReset}
-
-disabled={actionLoading}
-
-className="
-bg-red-500
-hover:bg-red-400
-text-black
-px-5
-py-2
-rounded-xl
-disabled:opacity-50
-"
-
->
-
-Reset
-
-</button>
-
-
 </div>
+{/* Statistics Cards */}
 
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mt-10">
 
-</div>
+<div className="bg-slate-900 rounded-2xl p-6 hover:-translate-y-2 transition-all duration-300 shadow-lg">
 
+<div className="flex justify-between items-center">
 
+<div>
 
+<p className="text-slate-400">
 
+Total Customers
 
+</p>
 
-
-
-
-{/* STATISTICS CARDS */}
-
-
-<div className="
-grid
-lg:grid-cols-5
-md:grid-cols-2
-gap-6
-mb-10
-">
-
-
-
-
-
-<div className="bg-slate-900 rounded-xl p-6">
-
-<Users className="text-cyan-400 mb-4"/>
-
-<p>Total Customers</p>
-
-<h2 className="text-3xl font-bold">
+<h2 className="text-4xl font-bold mt-2">
 
 {stats.total}
 
@@ -654,19 +316,30 @@ mb-10
 
 </div>
 
+<Users
+size={42}
+className="text-cyan-400"
+/>
+
+</div>
+
+</div>
 
 
 
+<div className="bg-slate-900 rounded-2xl p-6 hover:-translate-y-2 transition-all duration-300 shadow-lg">
 
+<div className="flex justify-between items-center">
 
+<div>
 
-<div className="bg-slate-900 rounded-xl p-6">
+<p className="text-slate-400">
 
-<Ticket className="text-yellow-400 mb-4"/>
+Waiting
 
-<p>Waiting</p>
+</p>
 
-<h2 className="text-3xl font-bold">
+<h2 className="text-4xl font-bold mt-2 text-yellow-400">
 
 {stats.waiting}
 
@@ -674,401 +347,286 @@ mb-10
 
 </div>
 
+<Clock
+size={42}
+className="text-yellow-400"
+/>
 
+</div>
 
-
-
-
-
-<div className="bg-slate-900 rounded-xl p-6">
-
-<Clock3 className="text-green-400 mb-4"/>
-
-<p>Currently Serving</p>
-
-
-<h2 className="text-3xl font-bold">
-
-{
-currentCustomer
-?
-`#${currentCustomer.tokenNumber}`
-:
-"--"
-}
-
+</div>
+<div className="bg-slate-900 rounded-2xl p-6 hover:-translate-y-2 transition-all duration-300 shadow-lg">
+<div className="flex justify-between items-center">
+<div>
+<p className="text-slate-400">
+Serving
+</p>
+<h2 className="text-4xl font-bold mt-2 text-green-400">
+{stats.serving}
 </h2>
+</div>
 
+<PlayCircle
+size={42}
+className="text-green-400"
+/>
+
+</div>
 
 </div>
 
 
 
+<div className="bg-slate-900 rounded-2xl p-6 hover:-translate-y-2 transition-all duration-300 shadow-lg">
 
+<div className="flex justify-between items-center">
 
+<div>
 
+<p className="text-slate-400">
 
-<div className="bg-slate-900 rounded-xl p-6">
+Completed
 
-<CheckCircle className="text-blue-400 mb-4"/>
+</p>
 
-<p>Completed</p>
-
-
-<h2 className="text-3xl font-bold">
+<h2 className="text-4xl font-bold mt-2 text-blue-400">
 
 {stats.completed}
 
 </h2>
 
+</div>
+
+<CheckCircle
+size={42}
+className="text-blue-400"
+/>
+
+</div>
 
 </div>
 
 
 
+<div className="bg-slate-900 rounded-2xl p-6 hover:-translate-y-2 transition-all duration-300 shadow-lg">
 
+<div className="flex justify-between items-center">
 
+<div>
 
+<p className="text-slate-400">
 
+Cancelled
 
-<div className="bg-slate-900 rounded-xl p-6">
+</p>
 
-<Activity className="text-red-400 mb-4"/>
-
-<p>Cancelled</p>
-
-
-<h2 className="text-3xl font-bold">
+<h2 className="text-4xl font-bold mt-2 text-red-400">
 
 {stats.cancelled}
 
 </h2>
 
+</div>
+
+<Trash2
+size={42}
+className="text-red-400"
+/>
+
+</div>
+
+</div>
+
+</div>
+<div className="bg-slate-900 rounded-2xl p-6 mt-10">
+
+<div className="grid md:grid-cols-4 gap-5">
+
+<div className="relative">
+
+<Search
+size={18}
+className="absolute left-4 top-4 text-gray-400"
+/>
+
+<input
+
+type="text"
+
+placeholder="Search customer..."
+
+value={search}
+
+onChange={(e)=>setSearch(e.target.value)}
+
+className="w-full bg-slate-800 pl-11 pr-4 py-3 rounded-xl outline-none"
+
+/>
 
 </div>
 
 
 
+<select
+
+value={status}
+
+onChange={(e)=>setStatus(e.target.value)}
+
+className="bg-slate-800 rounded-xl px-4"
+
+>
+
+<option value="">
+
+All Status
+
+</option>
+
+<option value="Waiting">
+
+Waiting
+
+</option>
+
+<option value="Serving">
+
+Serving
+
+</option>
+
+<option value="Completed">
+
+Completed
+
+</option>
+
+<option value="Skipped">
+
+Skipped
+
+</option>
+
+</select>
 
 
+
+<select
+
+value={service}
+
+onChange={(e)=>setService(e.target.value)}
+
+className="bg-slate-800 rounded-xl px-4"
+
+>
+
+<option value="">
+
+All Services
+
+</option>
+
+<option value="General Service">
+
+General Service
+
+</option>
+
+<option value="Consultation">
+
+Consultation
+
+</option>
+
+<option value="Payment">
+
+Payment
+
+</option>
+
+<option value="Support">
+
+Support
+
+</option>
+
+</select>
+
+
+
+<button
+
+onClick={loadDashboard}
+
+className="bg-cyan-500 rounded-xl font-semibold"
+
+>
+
+Apply Filters
+
+</button>
 
 </div>
 
-
-
-
-
-
-
-
-
-{/* ANALYTICS */}
-
-
-<div className="
-bg-slate-900
-rounded-xl
-border
-border-slate-800
-p-6
-mb-10
-">
-
-
-<div className="flex items-center gap-2 mb-6">
-
-
-<BarChart3 className="text-cyan-400"/>
-
-
-<h2 className="text-2xl font-semibold">
-
-Queue Analytics
-
-</h2>
-
-
 </div>
-
-
-
-
-
-
-
-{/* COMPLETION */}
-
-
-<div className="mb-6">
-
-
-<div className="flex justify-between mb-2">
-
-
-<span>
-Completion Rate
-</span>
-
-
-<span className="text-green-400 font-bold">
-
-{completionPercentage}%
-
-</span>
-
-
-</div>
-
-
-
-
-<div className="
-w-full
-bg-slate-700
-rounded-full
-h-3
-">
-
-
-<div
-
-className="
-bg-green-500
-h-3
-rounded-full
-"
-
-style={{
-width:`${completionPercentage}%`
-}}
-
-></div>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-{/* WAITING */}
-
-
-<div className="mb-6">
-
-
-<div className="flex justify-between mb-2">
-
-
-<span>
-Waiting Load
-</span>
-
-
-<span className="text-yellow-400 font-bold">
-
-{waitingPercentage}%
-
-</span>
-
-
-</div>
-
-
-
-
-<div className="
-w-full
-bg-slate-700
-rounded-full
-h-3
-">
-
-
-<div
-
-className="
-bg-yellow-500
-h-3
-rounded-full
-"
-
-style={{
-width:`${waitingPercentage}%`
-}}
-
-></div>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-{/* SERVING */}
-
-
-<div>
-
-
-<div className="flex justify-between mb-2">
-
-
-<span>
-Serving Percentage
-</span>
-
-
-<span className="text-cyan-400 font-bold">
-
-{servingPercentage}%
-
-</span>
-
-
-</div>
-
-
-
-
-
-<div className="
-w-full
-bg-slate-700
-rounded-full
-h-3
-">
-
-
-<div
-
-className="
-bg-cyan-500
-h-3
-rounded-full
-"
-
-style={{
-width:`${servingPercentage}%`
-}}
-
-></div>
-
-
-</div>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-{/* LIVE QUEUE TABLE */}
-
-
-<div className="
-bg-slate-900
-rounded-xl
-border
-border-slate-800
-p-6
-">
-
-
-
-<h2 className="text-2xl font-semibold mb-6">
-
-Live Queue
-
-</h2>
-
-
-
-
+<div className="bg-slate-900 rounded-2xl mt-10 overflow-hidden">
 
 <div className="overflow-x-auto">
 
-
 <table className="w-full">
 
+<thead className="bg-slate-800">
 
-<thead>
+<tr>
 
+<th className="py-4">
 
-<tr className="
-border-b
-border-slate-700
-text-cyan-400
-">
-
-
-<th className="py-3">
 Token
+
 </th>
 
-
 <th>
-Name
+
+Customer
+
 </th>
 
-
 <th>
+
 Email
+
 </th>
 
-
 <th>
+
 Service
+
 </th>
 
-
 <th>
+
 Status
-</th>
 
+</th>
 
 <th>
-Actions
-</th>
 
+Actions
+
+</th>
 
 </tr>
 
-
 </thead>
-
-
-
-
 
 <tbody>
 
-
 {
-queue.length===0
 
-?
+loading ?
+
+(
 
 <tr>
 
@@ -1076,94 +634,85 @@ queue.length===0
 
 colSpan="6"
 
-className="
-text-center
-py-8
-text-slate-400
-"
+className="py-16 text-center"
 
 >
 
-No customers in queue
+Loading...
 
 </td>
 
 </tr>
 
+)
 
 :
 
+queues.length===0 ?
 
-queue.map(customer=>(
+(
 
+<tr>
 
-<tr
+<td
 
-key={customer._id}
+colSpan="6"
 
-className="
-border-b
-border-slate-800
-"
+className="py-16 text-center"
 
 >
 
-
-<td className="py-4">
-
-#{customer.tokenNumber}
+No Queue Found
 
 </td>
 
+</tr>
 
+):
+queues.map((queue)=>(
 
-<td>
+<tr
+key={queue._id}
+className="border-b border-slate-800 hover:bg-slate-800/40 transition-all duration-300"
+>
 
-{customer.customerName}
+<td className="py-5 text-center font-bold text-cyan-400">
 
-</td>
-
-
-
-<td>
-
-{customer.customerEmail}
-
-</td>
-
-
-
-<td>
-
-{customer.serviceName}
+Q-{queue.tokenNumber}
 
 </td>
 
+<td className="text-center">
 
+{queue.customerName}
 
+</td>
 
+<td className="text-center">
 
-<td>
+{queue.customerEmail}
 
+</td>
+
+<td className="text-center">
+
+{queue.serviceName}
+
+</td>
+
+<td className="text-center">
 
 <span
-
 className={`
-px-3
-py-1
+
+px-4
+py-2
 rounded-full
 text-sm
+font-semibold
 
 ${
-customer.status==="Serving"
-
-?
-
-"bg-green-500/20 text-green-400"
-
-:
-
-customer.status==="Waiting"
+queue.status==="Waiting"
 
 ?
 
@@ -1171,11 +720,27 @@ customer.status==="Waiting"
 
 :
 
-customer.status==="Completed"
+queue.status==="Serving"
+
+?
+
+"bg-green-500/20 text-green-400"
+
+:
+
+queue.status==="Completed"
 
 ?
 
 "bg-blue-500/20 text-blue-400"
+
+:
+
+queue.status==="Skipped"
+
+?
+
+"bg-orange-500/20 text-orange-400"
 
 :
 
@@ -1184,83 +749,232 @@ customer.status==="Completed"
 }
 
 `}
-
 >
 
-{customer.status}
+{queue.status}
 
 </span>
 
-
 </td>
 
+<td>
 
-
-
-
-
-<td className="space-x-2">
-
-
+<div className="flex justify-center gap-2 flex-wrap">
 
 <button
 
-disabled={actionLoading}
+onClick={handleServeNext}
 
-onClick={()=>handleComplete(customer._id)}
+className="bg-green-600 hover:bg-green-700 px-3 py-2 rounded-lg transition"
 
-className="
-bg-green-600
-px-3
-py-1
-rounded
-"
+title="Serve Next"
+
 >
-Complete
-</button>
-<button
-disabled={actionLoading}
 
-onClick={()=>handleRecall(customer._id)}
+<PlayCircle size={18}/>
 
-className="
-bg-blue-600
-px-3
-py-1
-rounded
-"
->
-Recall
 </button>
+
+{
+
+queue.status==="Skipped"
+
+&&
+
+(
+
 <button
 
-disabled={actionLoading}
+onClick={()=>handleRecall(queue._id)}
 
-onClick={()=>handleDelete(customer._id)}
+className="bg-yellow-500 hover:bg-yellow-600 px-3 py-2 rounded-lg transition"
 
-className="
-bg-red-600
-px-3
-py-1
-rounded
-"
+title="Recall"
+
 >
-Delete
+
+<RotateCcw size={18}/>
+
 </button>
-</td>
-</tr>
-))
+
+)
 
 }
+
+<button
+
+onClick={handleSkip}
+
+className="bg-orange-500 hover:bg-orange-600 px-3 py-2 rounded-lg transition"
+
+title="Skip"
+
+>
+
+<SkipForward size={18}/>
+
+</button>
+
+<button
+
+onClick={()=>handleDelete(queue._id)}
+
+className="bg-red-600 hover:bg-red-700 px-3 py-2 rounded-lg transition"
+
+title="Delete"
+
+>
+
+<Trash2 size={18}/>
+
+</button>
+
+</div>
+
+</td>
+
+</tr>
+
+))}
+
 </tbody>
 </table>
-</div>
-</div>
-</div>
-</div>
-);
-      </div>
 
-    );
-  }
+</div>
+
+</div>
+
+{/* Pagination */}
+
+<div className="flex justify-between items-center mt-8">
+
+<div className="text-slate-400">
+
+Page {page} of {pages}
+
+</div>
+
+<div className="flex gap-4">
+
+<button
+
+disabled={page===1}
+
+onClick={()=>setPage(page-1)}
+
+className="px-5 py-2 rounded-lg bg-slate-800 disabled:opacity-40 hover:bg-slate-700 transition"
+
+>
+
+Previous
+
+</button>
+
+<button
+
+disabled={page===pages}
+
+onClick={()=>setPage(page+1)}
+
+className="px-5 py-2 rounded-lg bg-cyan-500 text-black font-semibold disabled:opacity-40 hover:bg-cyan-400 transition"
+
+>
+
+Next
+
+</button>
+
+</div>
+
+</div>
+
+{/* Queue Controls */}
+
+<div className="grid md:grid-cols-2 gap-8 mt-12">
+
+<div className="bg-slate-900 rounded-2xl p-8">
+
+<h2 className="text-2xl font-bold text-cyan-400">
+
+Queue Controls
+
+</h2>
+
+<p className="text-slate-400 mt-2">
+
+Manage the live queue efficiently.
+
+</p>
+
+<div className="grid grid-cols-2 gap-4 mt-8">
+
+<button
+
+onClick={handleServeNext}
+
+className="bg-green-600 hover:bg-green-700 py-3 rounded-xl font-semibold transition"
+
+>
+
+Serve Next
+
+</button>
+
+<button
+
+onClick={handleSkip}
+
+className="bg-orange-500 hover:bg-orange-600 py-3 rounded-xl font-semibold transition"
+
+>
+
+Skip
+
+</button>
+
+</div>
+
+</div>
+
+<div className="bg-slate-900 rounded-2xl p-8">
+
+<h2 className="text-2xl font-bold text-red-400">
+
+Danger Zone
+
+</h2>
+
+<p className="text-slate-400 mt-2">
+
+Reset the queue only when there are no active customers.
+
+</p>
+
+<button
+
+onClick={handleReset}
+
+className="mt-8 w-full bg-red-600 hover:bg-red-700 py-4 rounded-xl font-bold transition"
+
+>
+
+Reset Queue
+
+</button>
+
+</div>
+
+</div>
+
+<div className="h-20"></div>
+
+</div>
+
+</div>
+
+);
 }
+
+
+
+

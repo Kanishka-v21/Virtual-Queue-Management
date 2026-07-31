@@ -30,7 +30,7 @@ export default function DashboardNavbar() {
                 </div>
                 <div className ="profile">
                     <FaUserCircle className="profile-icon" />
-                    <span></span>
+                    <span>{user?.name}</span>
                 </div>
                 
                 <button

@@ -1,48 +1,77 @@
 const mongoose = require("mongoose");
 
+
 const queueSchema = new mongoose.Schema(
-   {
+
+{
+
     user:{
-    type: mongoose.Schema.Types.ObjectId,
-    ref:"User",
-    required:true
-},
-    tokenNumber: {
-        type: Number,
-        required: true,
-        unique: true,
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
+        required:true
     },
-    customerName: {
-        type: String,
-        required: true,
+
+
+    tokenNumber:{
+        type:Number,
+        required:true,
+        unique:true
     },
-    customerEmail: {
-        type: String,
-        required: true,
+
+
+    customerName:{
+        type:String,
+        required:true
     },
-    serviceName: {
-        type: String,
-        required: true,
+
+
+    customerEmail:{
+        type:String,
+        required:true
     },
-    
-    status: {
-        type: String,
-        enum: ["Waiting", "Serving", "Skipped", "Completed", "Cancelled"],
-        default: "Waiting",
+
+
+    serviceName:{
+        type:String,
+        required:true
     },
-    estimatedTime: {
-        type: Number,
-        default: 10,
-        min: 1
+
+
+    status:{
+        type:String,
+        enum:[
+            "Waiting",
+            "Serving",
+            "Skipped",
+            "Completed",
+            "Cancelled"
+        ],
+        default:"Waiting"
     },
-    joinedAt: {
-        type: Date,
-        default: Date.now,
+
+
+    estimatedTime:{
+        type:Number,
+        default:10
     },
-},
-    { 
-        timestamps: true,
+
+
+    joinedAt:{
+        type:Date,
+        default:Date.now
     }
 
+},
+
+{
+    timestamps:true
+}
+
+
 );
-module.exports = mongoose.model("Queue", queueSchema);
+
+
+module.exports = mongoose.model(
+    "Queue",
+    queueSchema
+);

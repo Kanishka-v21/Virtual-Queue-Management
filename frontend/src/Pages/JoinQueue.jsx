@@ -2,6 +2,7 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {joinQueue} from "../services/queueService";
 import {useAuth} from "../context/AuthContext";
+import { successToast, errorToast } from "../utils/toast";
 
 
 export default function JoinQueue(){
@@ -26,7 +27,7 @@ const handleJoin = async()=>{
 
 if(!serviceName){
 
-alert("Please select service");
+errorToast("Please select service");
 
 return;
 
@@ -35,7 +36,7 @@ return;
 
 if(!user){
 
-alert("Please login first");
+errorToast("Please login first");
 
 navigate("/login");
 
@@ -58,7 +59,7 @@ customerName:user.name,
 
 customerEmail:user.email,
 
-serviceName
+serviceName:serviceName
 
 });
 
@@ -69,13 +70,15 @@ console.log("Queue Response:", data);
 
 
 setQueue(data);
-
-
-
-alert(
-`Your Token Number is Q-${data.tokenNumber}`
+localStorage.setItem(
+    "queueInfo",
+    JSON.stringify(data)
 );
 
+
+successToast(
+    `Token Q-${data.tokenNumber} generated successfully.`
+);
 
 
 navigate("/dashboard");
@@ -92,7 +95,7 @@ error.response?.data || error.message
 
 
 
-alert(
+errorToast(
 error.response?.data?.message ||
 "Unable to join queue"
 );
@@ -177,13 +180,22 @@ disabled={loading}
 className="w-full bg-cyan-500 py-3 rounded-lg font-bold"
 
 >
-
-
 {
-loading?
-"Joining..."
+
+loading ?
+
+<div className="flex items-center justify-center gap-3">
+
+    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"/>
+
+    Joining Queue...
+
+</div>
+
 :
+
 "Join Queue"
+
 }
 </button>
 </div>

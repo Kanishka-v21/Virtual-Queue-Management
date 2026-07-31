@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import { ToastContainer } from "react-toastify";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
@@ -11,7 +11,7 @@ import AdminDashboard from "./Pages/AdminDashboard";
 import Profile from "./Pages/Profile";
 import Settings from "./Pages/Settings";
 
-
+const data = await getMyQueue();
 import ProtectedRoute from "./Components/ProtectedRoute";
 import AdminRoute from "./Components/AdminRoute";
 import { useEffect } from "react";
@@ -20,7 +20,7 @@ import { getMyQueue } from "../services/queueService";
 import { useAuth } from "./context/AuthContext";
 import "./App.css";
 function App() {
-  const data = await getMyQueue();
+
   const { user } = useAuth();
 
   useEffect(() => {
@@ -88,7 +88,16 @@ function App() {
 
 
       </Routes>
-
+     <ToastContainer
+    position="top-right"
+    autoClose={2500}
+    hideProgressBar={false}
+    newestOnTop
+    closeOnClick
+    pauseOnHover
+    draggable
+    theme="dark"
+/>
     </BrowserRouter>
   );
 }

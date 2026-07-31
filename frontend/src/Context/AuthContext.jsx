@@ -59,24 +59,15 @@ export const AuthProvider=({children})=>{
 
 
 
-    const logout=()=>{
+    const logout = () => {
 
+    setUser(null);
 
-        setUser(null);
+    localStorage.removeItem("userInfo");
 
+    localStorage.removeItem("token");
 
-        localStorage.removeItem(
-            "userInfo"
-        );
-
-
-        localStorage.removeItem(
-            "token"
-        );
-
-
-    };
-
+};
 
 
 

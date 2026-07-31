@@ -49,6 +49,10 @@ export const getCurrentCustomer=async()=>{
     return data;
 
 };
+export const getWaitingQueue = async () => {
+    const { data } = await API.get("/queue/waiting");
+    return data;
+};
 
 
 // Get User Queues

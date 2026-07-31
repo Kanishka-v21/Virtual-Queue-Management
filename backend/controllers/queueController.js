@@ -284,7 +284,7 @@ const getQueuePosition = async (req, res) => {
     let estimatedWaitTime = 0;
 
     for (let i = 0; i < position; i++) {
-      estimatedWaitTime += waitingQueues[i].estimatedTime;
+      estimatedWaitTime += 5;
     }
 
     return res.status(200).json({
@@ -490,41 +490,66 @@ const getCompletedQueue = async (req, res) => {
     });
   }
 };
-const getMyQueues = async(req,res)=>{
+const getMyQueues = async (req, res) => {
+    try {
 
-try{
+        const queue = await Queue.findOne({
 
-const queue = await Queue.findOne({
-    user:req.user._id,
-    status:{
-        $in:[
-            "Waiting",
-            "Serving"
-        ]
+            user: req.user._id,
+
+            status: {
+                $in: ["Waiting", "Serving"]
+            }
+
+        });
+
+        if (!queue) {
+
+            return res.status(404).json({
+                message: "No active queue"
+            });
+
+        }
+
+        const waitingQueue = await Queue.find({
+
+            status: "Waiting"
+
+        }).sort({
+
+            tokenNumber: 1
+
+        });
+
+        const peopleAhead = waitingQueue.filter(
+
+            (q) => q.tokenNumber < queue.tokenNumber
+
+        ).length;
+
+        const estimatedWaitTime = peopleAhead * 5;
+
+        res.json({
+
+            queue,
+
+            peopleAhead,
+
+            estimatedWaitTime
+
+        });
+
     }
-});
 
+    catch (error) {
 
-if(!queue){
+        res.status(500).json({
 
-return res.status(404).json({
-    message:"No active queue"
-});
+            message: error.message
 
-}
+        });
 
-
-res.json(queue);
-
-
-}
-catch(error){
-
-res.status(500).json({
-message:error.message
-});
-
-}
+    }
 
 };
 
