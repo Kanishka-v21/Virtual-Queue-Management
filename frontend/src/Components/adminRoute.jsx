@@ -50,12 +50,10 @@ export default function AdminRoute(){
 
     }
 
-
-
     return <Outlet/>;
 
 }
 
-    return children;
+   
 
 

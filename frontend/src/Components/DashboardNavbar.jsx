@@ -24,14 +24,6 @@ export default function DashboardNavbar() {
                 <h2>Queue<span>Flow</span></h2>
             </div>
             <div className="dashboard-nav-right">
-                <div className="notification">
-                    <FaBell />
-                    <span className="notification-dot"></span>
-                </div>
-                <div className ="profile">
-                    <FaUserCircle className="profile-icon" />
-                    <span>{user?.name}</span>
-                </div>
                 
                 <button
                     onClick={handleProfile}

@@ -3,9 +3,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-
 const connectDB = require("./config/db");
-
 const authRoutes = require("./routes/authRoutes");
 const queueRoutes = require("./routes/queueRoutes");
 
@@ -42,10 +40,7 @@ app.use(limiter);
 // Routes
 
 app.use("/api/auth", authRoutes);
-
 app.use("/api/queue", queueRoutes);
-
-
 
 // Test Route
 

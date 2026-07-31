@@ -17,7 +17,7 @@ function Hero() {
         </h1>
 
         <p>
-          Our Virtual Queue Management System is a smart web application designed to eliminate long physical waiting lines. Instead of standing in queues, users can join a virtual queue from anywhere, monitor their position in real time, receive notifications as their turn approaches, and visit the service location only when needed. This improves convenience for users while helping organizations manage crowds efficiently and reduce waiting time.
+          Our Virtual Queue Management System is a smart web application designed to eliminate long physical waiting lines. Instead of standing in queues, users can join a virtual queue from anywhere, monitor their position in real time, receive notifications as their turn approaches, and visit the service location only when needed. 
           
         </p>
 

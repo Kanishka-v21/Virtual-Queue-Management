@@ -25,14 +25,10 @@ const [queue,setQueue]=useState(null);
 const handleJoin = async()=>{
 
 
-if(!serviceName){
-
-errorToast("Please select service");
-
-return;
-
+if (!customerName || !customerEmail || !serviceName) {
+    errorToast("Please fill all fields");
+    return;
 }
-
 
 if(!user){
 
@@ -55,11 +51,11 @@ setLoading(true);
 
 const data = await joinQueue({
 
-customerName:user.name,
+customerName,
 
-customerEmail:user.email,
+customerEmail,
 
-serviceName:serviceName
+serviceName
 
 });
 
@@ -128,12 +124,25 @@ return(
 Join Queue
 
 </h1>
-
+<input
+    type="text"
+    placeholder="Enter your name"
+    value={customerName}
+    onChange={(e) => setCustomerName(e.target.value)}
+    className="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 text-white placeholder-slate-400 mb-4 focus:outline-none focus:border-cyan-400"
+/>
+<input
+    type="email"
+    placeholder="Enter your email"
+    value={customerEmail}
+    onChange={(e) => setCustomerEmail(e.target.value)}
+    className="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 text-white placeholder-slate-400 mb-6 focus:outline-none focus:border-cyan-400"
+/>
 
 
 <select
 
-className="w-full p-3 rounded-lg text-black mb-6"
+className="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 text-white mb-6 focus:outline-none focus:border-cyan-400"
 
 value={serviceName}
 
@@ -142,27 +151,27 @@ onChange={(e)=>setServiceName(e.target.value)}
 >
 
 
-<option value="">
+<option className= "text-white" value="">
 Select Service
 </option>
 
 
-<option>
+<option className= "text-white">
 General Service
 </option>
 
 
-<option>
+<option className= "text-white">
 Consultation
 </option>
 
 
-<option>
+<option className= "text-white">
 Payment
 </option>
 
 
-<option>
+<option className= "text-white">
 Support
 </option>
 

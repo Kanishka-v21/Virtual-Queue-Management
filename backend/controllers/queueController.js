@@ -284,7 +284,7 @@ const getQueuePosition = async (req, res) => {
     let estimatedWaitTime = 0;
 
     for (let i = 0; i < position; i++) {
-      estimatedWaitTime += 5;
+      estimatedWaitTime += 10;
     }
 
     return res.status(200).json({
@@ -504,12 +504,14 @@ const getMyQueues = async (req, res) => {
         });
 
         if (!queue) {
-
-            return res.status(404).json({
-                message: "No active queue"
-            });
-
-        }
+    return res.status(200).json({
+        success: true,
+        queue: null,
+        peopleAhead: 0,
+        estimatedWaitTime: 0,
+        message: "No active queue"
+    });
+}
 
         const waitingQueue = await Queue.find({
 

@@ -7,6 +7,7 @@ const { adminOnly } = require("../middleware/roleMiddleware");
 
 router.post("/join", protect, joinQueue);
 router.get("/", protect, getQueue);
+router.get("/my", protect, getMyQueues);
 router.get("/token/:token", protect, getQueueByToken);
 router.put("/:id", protect, adminOnly, updateQueueStatus);
 router.delete("/:id", protect, adminOnly, deleteQueue);
@@ -18,10 +19,9 @@ router.get("/waiting", protect, getWaitingQueue);
 router.get("/completed", protect, adminOnly, getCompletedQueue);
 router.patch("/skip", protect, adminOnly, skipCustomer);
 router.patch("/recall/:id",protect, adminOnly, recallCustomer);
+
 router.delete("/reset",protect, adminOnly, resetQueue);
-const {
-getMyQueues
-}=require("../controllers/queueController");
+
 router.get("/test", (req, res) => {
     res.json({
         message: "Queue routes working"

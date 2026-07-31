@@ -53,182 +53,219 @@ export default function Home() {
     <>
 
     <Navbar/>
+{/* ---------------- HERO ---------------- */}
 
-    {/* Hero Banner */}
+<section className="bg-slate-900 border-t border-slate-800">
 
-    <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-950 overflow-hidden">
+    <div className="max-w-6xl mx-auto px-6 pt-48 sm:pt-28
+md:pt-32 sm:px-6 pb-20 text-center">
 
-        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
+        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-50 text-cyan-700 text-sm font-medium">
 
-            <div>
+            <ShieldCheck size={16} />
 
-                <span className="inline-flex items-center gap-2 bg-cyan-500/20 text-cyan-400 px-5 py-2 rounded-full font-semibold">
+            Virtual Queue Management
 
-                    <ShieldCheck size={18}/>
+        </span>
 
-                    Smart Virtual Queue Platform
+        <h1 className="mt-8 text-4xl sm:text-4xl md:text-5xl md:text-6xl font-semibold text-white leading-tight">
 
-                </span>
+            Smart Queue Management
 
-                <h1 className="mt-8 text-6xl lg:text-7xl font-black leading-tight text-white">
+            <br />
 
-                    Stop
+            Made Simple
 
-                    <span className="text-cyan-400">
+        </h1>
 
-                        Waiting.
+        <p className="mt-6 max-w-2xl mx-auto text-lg leading-8 text-slate-600">
 
-                    </span>
+            QueueFlow helps organizations reduce waiting time by letting customers
+            join queues remotely, track their position live, and arrive only when
+            they are needed.
 
-                    <br/>
+        </p>
 
-                    Start Living.
+        <div className="flex justify-center gap-4 mt-10 flex-wrap">
 
-                </h1>
+            <button
+                onClick={() => navigate("/register")}
+                className="px-7 py-3 rounded-lg bg-cyan-600 text-white font-medium hover:bg-cyan-700 transition"
+            >
+                Get Started
+            </button>
 
-                <p className="mt-8 text-slate-300 text-xl leading-9 max-w-2xl">
+            <button
+                onClick={() => navigate("/about")}
+                className="px-7 py-3 rounded-lg border border-slate-300 text-slate-700 hover:border-cyan-600 hover:text-cyan-600 transition"
+            >
+                Learn More
+            </button>
 
-                    QueueFlow lets users join queues remotely,
+        </div>
 
-                    monitor live progress,
+    </div>
 
-                    receive real-time updates,
+</section>
+<section className="py-4 bg-slate"></section>
+    <Hero/>
 
-                    and arrive exactly when it's their turn.
+ {/* ---------------- HOW IT WORKS ---------------- */}
 
-                    No crowds.
+<section
+    id="how-it-works"
+    className="py-28 bg-gradient-to-br from-blue-50 via-cyan-100 to-cyan-950"
+>
 
-                    No wasted hours.
+    <div className="max-w-5xl mx-auto px-6">
 
-                </p>
+        <div className="text-center">
 
-                <div className="flex flex-wrap gap-5 mt-10">
+            <p className="text-cyan-600 font-medium uppercase tracking-[3px]">
 
-                    <button
+                How It Works
 
-                        onClick={()=>navigate("/register")}
+            </p>
 
-                        className="bg-cyan-500 hover:bg-cyan-400 transition-all duration-300 px-8 py-4 rounded-xl text-black font-bold flex items-center gap-3 shadow-xl shadow-cyan-500/30"
+            <h2 className="mt-4 text-4xl md:text-5xl font-semibold text-slate-900">
 
-                    >
+                Three simple steps
 
-                        Get Started
+            </h2>
 
-                        <ArrowRight/>
+            <p className="mt-6 max-w-2xl mx-auto text-lg leading-8 text-slate-600">
 
-                    </button>
+                QueueFlow removes unnecessary waiting by letting customers
+                join, track and manage their queue digitally.
 
-                    <button
+            </p>
 
-                        onClick={()=>navigate("/about")}
+        </div>
 
-                        className="border border-cyan-400 hover:bg-cyan-500 hover:text-black transition-all duration-300 px-8 py-4 rounded-xl font-semibold"
+        <div className="mt-20">
 
-                    >
+            <div className="relative">
 
-                        Learn More
+                {/* Vertical Line */}
 
-                    </button>
+                <div className="hidden md:block absolute left-1/2 top-0 h-full w-px bg-slate-200 -translate-x-1/2"/>
+
+                {/* Step 1 */}
+
+                <div className="grid md:grid-cols-2 gap-14 items-center mb-20">
+
+                    <div className="text-center md:text-right">
+
+                        <span className="text-sm uppercase tracking-widest text-cyan-600">
+
+                            Step 01
+
+                        </span>
+
+                        <h3 className="mt-3 text-3xl font-semibold text-slate-900">
+
+                            Join the Queue
+
+                        </h3>
+
+                        <p className="mt-5 text-slate-600 leading-8">
+
+                            Register in seconds and reserve your position
+                            without standing in a physical line.
+
+                        </p>
+
+                    </div>
+
+                    <div className="flex justify-center">
+
+                        <div className="w-20 h-20 rounded-full bg-cyan-900 flex items-center justify-center text-2xl font-semibold text-white">
+
+                            1
+
+                        </div>
+
+                    </div>
 
                 </div>
 
-            </div>
+                {/* Step 2 */}
 
-            <div className="grid grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-14 items-center mb-20">
 
-                <div className="bg-slate-900 rounded-3xl p-8 hover:-translate-y-2 transition-all duration-300">
+                    <div className="flex justify-center md:order-1 order-2">
 
-                    <Users
+                        <div className="w-20 h-20 rounded-full bg-cyan-900 flex items-center justify-center text-2xl font-semibold text-white">
 
-                        size={42}
+                            2
 
-                        className="text-cyan-400"
+                        </div>
 
-                    />
+                    </div>
 
-                    <h2 className="text-5xl font-black mt-6">
+                    <div className="text-center md:text-left md:order-2 order-1">
 
-                        10K+
+                        <span className="text-sm uppercase tracking-widest text-cyan-600">
 
-                    </h2>
+                            Step 02
 
-                    <p className="text-slate-400 mt-3">
+                        </span>
 
-                        Happy Users
+                        <h3 className="mt-3 text-3xl font-semibold text-slate-900">
 
-                    </p>
+                            Track Your Position
 
-                </div>
+                        </h3>
 
-                <div className="bg-slate-900 rounded-3xl p-8 hover:-translate-y-2 transition-all duration-300 mt-10">
+                        <p className="mt-5 text-slate-600 leading-8">
 
-                    <Clock3
+                            Stay updated with your token number,
+                            people ahead and estimated waiting time
+                            in real time.
 
-                        size={42}
+                        </p>
 
-                        className="text-cyan-400"
-
-                    />
-
-                    <h2 className="text-5xl font-black mt-6">
-
-                        80%
-
-                    </h2>
-
-                    <p className="text-slate-400 mt-3">
-
-                        Less Waiting Time
-
-                    </p>
+                    </div>
 
                 </div>
 
-                <div className="bg-slate-900 rounded-3xl p-8 hover:-translate-y-2 transition-all duration-300">
+                {/* Step 3 */}
 
-                    <Bell
+                <div className="grid md:grid-cols-2 gap-14 items-center">
 
-                        size={42}
+                    <div className="text-center md:text-right">
 
-                        className="text-cyan-400"
+                        <span className="text-sm uppercase tracking-widest text-cyan-600">
 
-                    />
+                            Step 03
 
-                    <h2 className="text-5xl font-black mt-6">
+                        </span>
 
-                        Live
+                        <h3 className="mt-3 text-3xl font-semibold text-slate-900">
 
-                    </h2>
+                            Arrive at the Right Time
 
-                    <p className="text-slate-400 mt-3">
+                        </h3>
 
-                        Instant Updates
+                        <p className="mt-5 text-slate-600 leading-8">
 
-                    </p>
+                            Receive updates and arrive only when
+                            your turn is approaching,
+                            saving valuable time.
 
-                </div>
+                        </p>
 
-                <div className="bg-slate-900 rounded-3xl p-8 hover:-translate-y-2 transition-all duration-300 mt-10">
+                    </div>
 
-                    <BarChart3
+                    <div className="flex justify-center">
 
-                        size={42}
+                        <div className="w-20 h-20 rounded-full bg-cyan-900 flex items-center justify-center text-2xl font-semibold text-white">
 
-                        className="text-cyan-400"
+                            3
 
-                    />
+                        </div>
 
-                    <h2 className="text-5xl font-black mt-6">
-
-                        Smart
-
-                    </h2>
-
-                    <p className="text-slate-400 mt-3">
-
-                        Analytics
-
-                    </p>
+                    </div>
 
                 </div>
 
@@ -236,395 +273,196 @@ export default function Home() {
 
         </div>
 
-    </section>
+    </div>
 
-    <Hero/>
+</section>
 
-    {/* Why QueueFlow */}
-    <section className="bg-slate-950 py-28 px-6">
+{/* ---------------- WHY QUEUEFLOW ---------------- */}
 
-    <div className="max-w-7xl mx-auto">
+<section className="py-28 bg-gradient-to-br from-cyan-200 via-blue-50 to-blue-300">
+
+    <div className="max-w-6xl mx-auto px-6">
 
         <div className="text-center">
 
-            <span className="text-cyan-400 uppercase tracking-[6px] font-semibold">
+            <p className="uppercase tracking-[3px] text-cyan-600 font-medium">
 
                 Why QueueFlow
 
-            </span>
+            </p>
 
-            <h2 className="text-5xl font-black mt-5">
+            <h2 className="mt-4 text-4xl md:text-5xl font-semibold text-slate-900">
 
-                Built For
-
-                <span className="text-cyan-400">
-
-                    Modern Organizations
-
-                </span>
+                Designed around people,
+                not waiting.
 
             </h2>
 
-            <p className="text-slate-400 mt-6 max-w-3xl mx-auto text-lg leading-8">
+            <p className="mt-6 max-w-3xl mx-auto text-lg leading-8 text-slate-600">
 
-                Whether you're managing a hospital,
-                university, bank, government office,
-                or service center,
-                QueueFlow provides a seamless digital queue
-                experience for customers and administrators.
+                QueueFlow simplifies the entire waiting experience,
+                helping customers save time while giving organizations
+                a smarter way to manage queues.
 
             </p>
 
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
+        {/* Block 1 */}
 
-            <div className="bg-slate-900 rounded-3xl p-8 hover:scale-105 transition duration-300">
+        <div className="mt-24 grid lg:grid-cols-2 gap-20 items-center">
+
+            <div>
 
                 <Clock3
-                    className="text-cyan-400"
-                    size={45}
+                    size={36}
+                    className="text-cyan-600"
                 />
 
-                <h3 className="text-2xl font-bold mt-6">
+                <h3 className="mt-6 text-3xl font-semibold text-slate-900">
 
-                    Save Time
+                    Save valuable time
 
                 </h3>
 
-                <p className="text-slate-400 mt-4 leading-7">
+                <p className="mt-6 text-lg leading-8 text-slate-600">
 
-                    Users no longer need to stand in physical queues.
+                    Join a queue from anywhere instead of standing in line.
+                    Spend your time doing something productive until it's
+                    almost your turn.
 
                 </p>
 
             </div>
 
-            <div className="bg-slate-900 rounded-3xl p-8 hover:scale-105 transition duration-300">
+            <div className="bg-white rounded-3xl p-10 border border-slate-200">
+
+                <p className="text-slate-500">
+
+                    Traditional Queue
+
+                </p>
+
+                <ul className="mt-6 space-y-5 text-slate-600">
+
+                    <li>• Long waiting lines</li>
+
+                    <li>• No estimated waiting time</li>
+
+                    <li>• Crowded service areas</li>
+
+                </ul>
+
+                <hr className="my-8"/>
+
+                <p className="text-cyan-600 font-medium">
+
+                    QueueFlow
+
+                </p>
+
+                <ul className="mt-6 space-y-5 text-slate-700">
+
+                    <li>✓ Join remotely</li>
+
+                    <li>✓ Live queue tracking</li>
+
+                    <li>✓ Better customer experience</li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+        {/* Block 2 */}
+
+        <div className="mt-28 grid lg:grid-cols-2 gap-20 items-center">
+
+            <div className="order-2 lg:order-1 bg-white rounded-3xl border border-slate-200 p-10">
 
                 <Bell
-                    className="text-cyan-400"
-                    size={45}
+                    size={36}
+                    className="text-cyan-600"
                 />
 
-                <h3 className="text-2xl font-bold mt-6">
+                <h4 className="mt-6 text-2xl font-semibold">
 
-                    Live Updates
+                    Stay informed
 
-                </h3>
+                </h4>
 
-                <p className="text-slate-400 mt-4 leading-7">
+                <p className="mt-5 leading-8 text-slate-600">
 
-                    Customers always know exactly when
-                    their turn is approaching.
+                    Monitor your token,
+                    people ahead,
+                    and estimated waiting time
+                    in real time.
 
                 </p>
 
             </div>
 
-            <div className="bg-slate-900 rounded-3xl p-8 hover:scale-105 transition duration-300">
+            <div className="order-1 lg:order-2">
+
+                <h3 className="text-3xl font-semibold text-slate-900">
+
+                    Live updates
+                    every step of the way
+
+                </h3>
+
+                <p className="mt-6 text-lg leading-8 text-slate-600">
+
+                    Customers always know what's happening.
+                    No confusion,
+                    no unnecessary waiting,
+                    and no missed turns.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        {/* Block 3 */}
+
+        <div className="mt-28 grid lg:grid-cols-2 gap-20 items-center">
+
+            <div>
 
                 <ShieldCheck
-                    className="text-cyan-400"
-                    size={45}
+                    size={36}
+                    className="text-cyan-600"
                 />
 
-                <h3 className="text-2xl font-bold mt-6">
+                <h3 className="mt-6 text-3xl font-semibold text-slate-900">
 
-                    Secure
+                    Secure and reliable
 
                 </h3>
 
-                <p className="text-slate-400 mt-4 leading-7">
+                <p className="mt-6 text-lg leading-8 text-slate-600">
 
-                    JWT authentication and protected routes
-                    keep user information secure.
+                    Built with secure authentication,
+                    protected routes
+                    and role-based access
+                    for both customers and administrators.
 
                 </p>
 
             </div>
 
-            <div className="bg-slate-900 rounded-3xl p-8 hover:scale-105 transition duration-300">
+            <div className="flex justify-center">
 
-                <Users
-                    className="text-cyan-400"
-                    size={45}
-                />
+                <div className="w-56 h-56 rounded-full bg-cyan-100 flex items-center justify-center">
 
-                <h3 className="text-2xl font-bold mt-6">
+                    <ShieldCheck
+                        size={70}
+                        className="text-cyan-700"
+                    />
 
-                    Better Experience
-
-                </h3>
-
-                <p className="text-slate-400 mt-4 leading-7">
-
-                    Reduce crowding while improving
-                    customer satisfaction.
-
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-{/* Statistics */}
-
-<section className="bg-cyan-500 py-20">
-
-    <div className="max-w-7xl mx-auto px-6">
-
-        <div className="grid md:grid-cols-4 gap-10 text-center">
-
-            <div>
-
-                <h2 className="text-6xl font-black text-slate-900">
-
-                    10K+
-
-                </h2>
-
-                <p className="mt-4 text-xl font-semibold text-slate-800">
-
-                    Users
-
-                </p>
-
-            </div>
-
-            <div>
-
-                <h2 className="text-6xl font-black text-slate-900">
-
-                    500+
-
-                </h2>
-
-                <p className="mt-4 text-xl font-semibold text-slate-800">
-
-                    Organizations
-
-                </p>
-
-            </div>
-
-            <div>
-
-                <h2 className="text-6xl font-black text-slate-900">
-
-                    99%
-
-                </h2>
-
-                <p className="mt-4 text-xl font-semibold text-slate-800">
-
-                    Satisfaction
-
-                </p>
-
-            </div>
-
-            <div>
-
-                <h2 className="text-6xl font-black text-slate-900">
-
-                    24/7
-
-                </h2>
-
-                <p className="mt-4 text-xl font-semibold text-slate-800">
-
-                    Availability
-
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-{/* Feature Highlights */}
-
-<section className="bg-slate-950 py-28 px-6">
-
-    <div className="max-w-7xl mx-auto">
-
-        <div className="text-center">
-
-            <span className="uppercase tracking-[5px] text-cyan-400">
-
-                Features
-
-            </span>
-
-            <h2 className="text-5xl font-black mt-5">
-
-                Everything You Need
-
-            </h2>
-
-        </div>
-
-        <div className="grid lg:grid-cols-3 gap-10 mt-20">
-
-            <div className="bg-slate-900 rounded-3xl p-8">
-
-                <CheckCircle2
-                    className="text-cyan-400"
-                    size={45}
-                />
-
-                <h3 className="text-3xl font-bold mt-6">
-
-                    Virtual Queue
-
-                </h3>
-
-                <p className="text-slate-400 mt-5 leading-8">
-
-                    Join from anywhere without waiting in line.
-
-                </p>
-
-            </div>
-
-            <div className="bg-slate-900 rounded-3xl p-8">
-
-                <CheckCircle2
-                    className="text-cyan-400"
-                    size={45}
-                />
-
-                <h3 className="text-3xl font-bold mt-6">
-
-                    Real-Time Tracking
-
-                </h3>
-
-                <p className="text-slate-400 mt-5 leading-8">
-
-                    Track position, token,
-                    estimated waiting time
-                    and queue status instantly.
-
-                </p>
-
-            </div>
-
-            <div className="bg-slate-900 rounded-3xl p-8">
-
-                <CheckCircle2
-                    className="text-cyan-400"
-                    size={45}
-                />
-
-                <h3 className="text-3xl font-bold mt-6">
-
-                    Admin Dashboard
-
-                </h3>
-
-                <p className="text-slate-400 mt-5 leading-8">
-
-                    Manage queues,
-                    serve customers,
-                    skip,
-                    recall,
-                    delete,
-                    and monitor analytics.
-
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-{/* Supported Services */}
-
-<section className="bg-[#07192E] py-24 px-6">
-
-    <div className="max-w-7xl mx-auto">
-
-        <div className="text-center">
-
-            <span className="uppercase tracking-[5px] text-cyan-400">
-
-                Applications
-
-            </span>
-
-            <h2 className="text-5xl font-black mt-5 text-white">
-
-                Suitable For Every Organization
-
-            </h2>
-
-            <p className="text-slate-400 mt-6 max-w-3xl mx-auto text-lg">
-
-                QueueFlow can be deployed anywhere customers
-                need organized and efficient queue management.
-
-            </p>
-
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
-
-            <div className="bg-slate-900 rounded-2xl p-8 text-center hover:-translate-y-2 transition">
-
-                <div className="text-6xl">🏥</div>
-
-                <h3 className="mt-6 text-2xl font-bold">
-
-                    Hospitals
-
-                </h3>
-
-            </div>
-
-            <div className="bg-slate-900 rounded-2xl p-8 text-center hover:-translate-y-2 transition">
-
-                <div className="text-6xl">🏦</div>
-
-                <h3 className="mt-6 text-2xl font-bold">
-
-                    Banks
-
-                </h3>
-
-            </div>
-
-            <div className="bg-slate-900 rounded-2xl p-8 text-center hover:-translate-y-2 transition">
-
-                <div className="text-6xl">🏛️</div>
-
-                <h3 className="mt-6 text-2xl font-bold">
-
-                    Government Offices
-
-                </h3>
-
-            </div>
-
-            <div className="bg-slate-900 rounded-2xl p-8 text-center hover:-translate-y-2 transition">
-
-                <div className="text-6xl">🎓</div>
-
-                <h3 className="mt-6 text-2xl font-bold">
-
-                    Universities
-
-                </h3>
+                </div>
 
             </div>
 
@@ -747,7 +585,7 @@ export default function Home() {
 
                 <p className="mt-6 text-slate-400">
 
-                    support@queueflow.com
+                    supportqueueFlow@gmail.com
 
                 </p>
 

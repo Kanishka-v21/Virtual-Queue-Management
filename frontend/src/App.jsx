@@ -10,17 +10,16 @@ import Dashboard from "./Pages/Dashboard";
 import AdminDashboard from "./Pages/AdminDashboard";
 import Profile from "./Pages/Profile";
 import Settings from "./Pages/Settings";
-
-const data = await getMyQueue();
 import ProtectedRoute from "./Components/ProtectedRoute";
 import AdminRoute from "./Components/AdminRoute";
 import { useEffect } from "react";
 import { getUserProfile } from "./services/authService";
-import { getMyQueue } from "../services/queueService";
+import { getMyQueues } from "./services/queueService";
 import { useAuth } from "./context/AuthContext";
 import "./App.css";
-function App() {
 
+function App() {
+  
   const { user } = useAuth();
 
   useEffect(() => {
@@ -91,7 +90,6 @@ function App() {
      <ToastContainer
     position="top-right"
     autoClose={2500}
-    hideProgressBar={false}
     newestOnTop
     closeOnClick
     pauseOnHover

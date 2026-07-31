@@ -52,15 +52,22 @@ const [waitingCount, setWaitingCount] = useState(0);
 
 
 const loadQueue=async()=>{
-    const data = await getMyQueue();
+    const data = await getMyQueues();
 
 setQueue(data);
 
+try {
+    const queueData = await getMyQueues();
 
-try{
-    const queueData = await getMyQueue();
+    if (!queueData?.queue) {
+        setQueue(null);
+        setProgress(0);
+        setPosition(null);
+        setLoading(false);
+        return;
+    }
 
-setQueue(queueData);
+    setQueue(queueData.queue);
 
 const waitingData = await getWaitingQueue();
 
@@ -68,7 +75,7 @@ const waiting = waitingData.waitingQueue.length;
 
 setTotalWaiting(waiting);
 
-if(data.queue.status==="Waiting"){
+if (queueData?.status === "Waiting") {
 
     const value =
         waiting===0
@@ -83,13 +90,13 @@ if(data.queue.status==="Waiting"){
 
 }
 
-else if(data.queue.status==="Serving"){
+else if (queueData?.status === "Serving") {
 
     setProgress(100);
 
 }
 
-else if(data.queue.status==="Completed"){
+else if (queueData?.status === "Completed") {
 
     setProgress(100);
 
@@ -101,12 +108,7 @@ else{
 
 }
 setQueue(queueData);
-try{
-    const current = await getCurrentCustomer();
-    setCurrentServing(current.customer);
-}catch{
-    setCurrentServing(null);
-}
+
 try{
     const waiting = await getWaitingQueue();
     setWaitingCount(waiting.total);
@@ -130,18 +132,22 @@ setLoading(false);
 };
 useEffect(()=>{ loadQueue();
 const interval = setInterval(
-loadQueue, 10000);
+loadQueue, 30000);
 
 return()=>clearInterval(interval);
 
 },[]);
 
 return(
+
+<div className="max-w-7xl mx-auto px-6 py-2">
+
+
 <div className="min-h-screen bg-slate-950 text-white">
 <DashboardNavbar/>
 <div className="
 pt-32
-px-6
+px-6 py-4
 max-w-7xl
 mx-auto
 ">
@@ -215,7 +221,6 @@ Refresh
 loading ?
 <div className="min-h-screen bg-slate-950">
 
-            <DashboardNavbar/>
 
             <div className="pt-32 max-w-7xl mx-auto px-6">
 
@@ -297,53 +302,21 @@ People Waiting
         <span
         className={`px-4 py-2 rounded-full text-sm font-semibold
         ${
-            queue.queue.status==="Waiting"
+            queue?.status==="Waiting"
             ?"bg-yellow-500/20 text-yellow-400"
 
-            :queue.queue.status==="Serving"
+            :queue?.status==="Serving"
 
             ?"bg-cyan-500/20 text-cyan-400"
 
-            :queue.queue.status==="Completed"
+            :queue?.status==="Completed"
 
             ?"bg-green-500/20 text-green-400"
 
             :"bg-orange-500/20 text-orange-400"
         }`}>
 
-            {queue.queue.status}
-
-        </span>
-
-    </div>
-
-    <div className="w-full bg-slate-700 rounded-full h-5 mt-8 overflow-hidden">
-
-        <div
-
-        style={{
-
-            width:`${progress}%`
-
-        }}
-
-        className="bg-cyan-400 h-5 rounded-full transition-all duration-1000"
-
-        />
-
-    </div>
-
-    <div className="flex justify-between mt-3 text-sm text-slate-400">
-
-        <span>
-
-            Progress
-
-        </span>
-
-        <span>
-
-            {progress}%
+            {queue.status}
 
         </span>
 
@@ -509,7 +482,7 @@ Service
 
 <h3 className="text-xl">
 
-{queue.queue.serviceName}
+{queue.serviceName}
 
 </h3>
 
@@ -528,7 +501,7 @@ text-2xl
 font-bold
 
 ${
-queue.queue.status==="Waiting"
+queue.status==="Waiting"
 
 ?
 
@@ -536,7 +509,7 @@ queue.queue.status==="Waiting"
 
 :
 
-queue.queue.status==="Serving"
+queue.status==="Serving"
 
 ?
 
@@ -544,7 +517,7 @@ queue.queue.status==="Serving"
 
 :
 
-queue.queue.status==="Completed"
+queue.status==="Completed"
 
 ?
 
@@ -559,16 +532,12 @@ queue.queue.status==="Completed"
 `}
 >
 
-{queue.queue.status}
+{queue.status}
 
 </p>
 
 
 </div>
-
-
-
-
 
 <div>
 
@@ -581,9 +550,11 @@ Joined Time
 
 <h3>
 {
-new Date(
-queue.queue.createdAt
-).toLocaleString()
+queue?.createdAt
+?
+new Date(queue.createdAt).toLocaleString()
+:
+"--"
 }
 
 </h3>
@@ -637,7 +608,7 @@ Join Queue
 
 
 </div>
-
+</div>
 
 );
 
