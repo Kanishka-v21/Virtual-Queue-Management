@@ -51,33 +51,6 @@ Waiting in long physical queues is inconvenient and time-consuming. This project
 * dotenv
 
 
-## 📂 Project Structure
-
-queue-management-system/
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── context/
-│   │   ├── services/
-│   │   ├── api/
-│   │   └── assets/
-│   ├── public/
-│   └── package.json
-│
-├── backend/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── models/
-│   ├── routes/
-│   ├── config/
-│   ├── server.js
-│   └── package.json
-│
-└── README.md
-
-
 ## ⚙️ Installation
 
 ### Clone the repository
@@ -126,12 +99,6 @@ npm install
 npm run dev
 ```
 
-The application will typically be available at:
-
-```
-http://localhost:5173
-```
-
 ## 🔐 Authentication
 
 The application uses **JWT (JSON Web Tokens)** for secure authentication.
@@ -170,8 +137,7 @@ Protected routes include:
 
 Home.png
 <img width="1613" height="752" alt="image" src="https://github.com/user-attachments/assets/28b8281a-c053-4393-bc61-06d5eb8cba62" />
-```
-<img width="1828" height="637" alt="image" src="https://github.com/user-attachments/assets/2e54bcab-db7c-4a96-9a4b-046ec9a2c6b6" />
+
 
 Login.png
 <img width="1472" height="817" alt="image" src="https://github.com/user-attachments/assets/fcef2be7-c2d1-4687-966f-86000d9341ec" />
@@ -187,7 +153,7 @@ AdminDashboard.png
 LiveQueue.png
 <img width="1035" height="732" alt="image" src="https://github.com/user-attachments/assets/0f958ed6-2955-4252-9aed-cd04700119fd" />
 
-```
+
 
 ---
 
