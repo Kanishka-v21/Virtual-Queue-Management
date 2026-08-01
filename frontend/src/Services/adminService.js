@@ -1,4 +1,4 @@
-import API from "../api/axios";
+import API from "../Api/axios";
 
 // Dashboard Statistics
 export const getDashboardStats = async () => {

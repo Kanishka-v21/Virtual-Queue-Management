@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {joinQueue} from "../services/queueService";
-import {useAuth} from "../context/AuthContext";
+import {joinQueue} from "../Services/queueService";
+import {useAuth} from "../Context/AuthContext";
 import { successToast, errorToast } from "../utils/toast";
 
 

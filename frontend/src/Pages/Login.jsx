@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { loginUser } from "../services/authService";
+import { loginUser } from "../Services/authService";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../Context/AuthContext";
 import { Mail, Lock, LogIn } from "lucide-react";
 import { errorToast } from "../utils/toast";
 

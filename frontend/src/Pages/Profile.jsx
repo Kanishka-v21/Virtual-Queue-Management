@@ -13,7 +13,7 @@ import {
 import {
     getAllQueues,
     getQueuePosition
-} from "../services/queueService";
+} from "../Services/queueService";
 
 export default function Profile() {
 

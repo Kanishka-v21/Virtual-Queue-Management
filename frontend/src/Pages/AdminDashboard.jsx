@@ -33,7 +33,7 @@ recallCustomer,
 deleteQueue,
 resetQueue
 
-} from "../services/adminService";
+} from "../Services/adminService";
 
 export default function AdminDashboard(){
 

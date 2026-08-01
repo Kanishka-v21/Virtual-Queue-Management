@@ -18,12 +18,12 @@ import SkeletonCard from "../Components/SkeletonCard";
 import {
     getQueuePosition, getCurrentCustomer,
     getWaitingQueue, getMyQueues
-} from "../services/queueService";
+} from "../Services/queueService";
 
 
 import {
     useAuth
-} from "../context/AuthContext";
+} from "../Context/AuthContext";
 
 
 import DashboardNavbar from "../Components/DashboardNavbar";

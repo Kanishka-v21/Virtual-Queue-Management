@@ -1,5 +1,5 @@
 import React,{useState} from "react";
-import API from "../api/axios";
+import API from "../Api/axios";
 import { successToast } from "../utils/toast";
 
 

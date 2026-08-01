@@ -13,9 +13,9 @@ import Settings from "./Pages/Settings";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import AdminRoute from "./Components/AdminRoute";
 import { useEffect } from "react";
-import { getUserProfile } from "./services/authService";
-import { getMyQueues } from "./services/queueService";
-import { useAuth } from "./context/AuthContext";
+import { getUserProfile } from "./Services/authService";
+import { getMyQueues } from "./Services/queueService";
+import { useAuth } from "./Context/AuthContext";
 import "./App.css";
 
 function App() {
