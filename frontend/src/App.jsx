@@ -11,7 +11,7 @@ import AdminDashboard from "./Pages/AdminDashboard";
 import Profile from "./Pages/Profile";
 import Settings from "./Pages/Settings";
 import ProtectedRoute from "./Components/ProtectedRoute";
-import adminRoute from "./Components/adminRoute";
+import AdminRoute from "./Components/adminRoute";
 import { useEffect } from "react";
 import { getUserProfile } from "./Services/authService";
 import { getMyQueues } from "./Services/queueService";
