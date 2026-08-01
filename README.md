@@ -197,14 +197,15 @@ Future scope includes:
 ## 🌍 Deployment
 
 Frontend can be deployed on:
+Live Demo:
 
 * Vercel
-* Netlify
+virtual-queue-management-cpov-nauxcxoj4-impact-x1.vercel.app
 
 Backend can be deployed on:
 
 * Render
-* Railway
+https://virtual-queue-management-a0z7.onrender.com
 
 Database:
 
