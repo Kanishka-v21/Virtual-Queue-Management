@@ -200,7 +200,7 @@ Frontend can be deployed on:
 Live Demo:
 
 * Vercel
-virtual-queue-management-cpov-nauxcxoj4-impact-x1.vercel.app
+https://virtual-queue-management-21-d58x1mnco-impact-x1.vercel.app
 
 Backend can be deployed on:
 
